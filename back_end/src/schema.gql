@@ -1,0 +1,13 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type wp_users {
+  id: ID!
+  user_login: String!
+  user_url: String!
+}
+
+type Query {
+  users: [wp_users!]!
+}
