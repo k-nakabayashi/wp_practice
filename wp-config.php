@@ -41,6 +41,9 @@ define( 'DB_CHARSET', $_ENV["DB_CHARSET"] );
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', $_ENV["DB_COLLATE"] );
 
+// デバッグ用のファイル
+define( 'WP_DEBUG_LOG_PATH', $_ENV["WP_DEBUG_LOG_PATH"] );
+
 /**#@+
  * Authentication unique keys and salts.
  *
@@ -84,6 +87,7 @@ $table_prefix = 'wp_';
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
 define( 'WP_DEBUG', True );
+define( 'WP_DEBUG_LOG', True );
 
 /* Add any custom values between this line and the "stop editing" line. */
 

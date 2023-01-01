@@ -360,6 +360,8 @@ add_action( 'tcd_membership_action-logout', 'tcd_membership_action_logout' );
  * 仮会員登録アクション
  */
 function tcd_membership_action_registration() {
+	
+	debug_log("== tcd_membership_action_registration 起動　==");
 	global $dp_options, $tcd_membership_vars, $wpdb;
 
 	nocache_headers();
