@@ -1,0 +1,90 @@
+
+<section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+                <tr>
+                    <td><label for="">身長</label></td>
+                    <td><input type="number" name="body_height" id="" value="{{user_detail['body_height']}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="">体重</label></td>
+                    <td><input type="number" name="body_weight" id="" value="{{user_detail['body_weight']}}"></td>
+                </tr>
+                <tr>
+                    <td><span for="">利き手</span></td>
+                    <td>
+                        <label for="dominant_hand_right">
+                            <input type="radio" name="dominant_hand" id="dominant_hand_right" value="0" {% if user_detail["dominant_hand"] == "0" %} checked {% endif %}>右
+                        </label>
+                        <label for="dominant_hand_left">
+                            <input type="radio" name="dominant_hand" id="dominant_hand_left" value="1}" {% if user_detail["dominant_hand"] == "1" %} checked {% endif %}>左
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="">最高血圧</label></td>
+                    <td><input type="number" name="max_blood_preasure" id="" value="{{user_detail['max_blood_preasure']}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="">最低血圧</label></td>
+                    <td><input type="number" name="min_blood_preasure" id="" value="{{user_detail['min_blood_preasure']}}"></td>
+                </tr>
+                <tr>
+                    <td><span for="">血液型</span></td>
+                    <td>
+                        <label for="blood_type_a">
+                            <input type="radio" name="blood_type" id="blood_type_a" value="A" {% if user_detail["blood_type"] == "A" %} checked {% endif %}>A
+                        </label>
+                        <label for="blood_type_b">
+                            <input type="radio" name="blood_type" id="blood_type_b" value="B" {% if user_detail["blood_type"] == "B" %} checked {% endif %}>B
+                        </label>
+                        <label for="blood_type_o">
+                            <input type="radio" name="blood_type" id="blood_type_o" value="O" {% if user_detail["blood_type"] == "O" %} checked {% endif %}>O
+                        </label>
+                        <label for="blood_type_ab">
+                            <input type="radio" name="blood_type" id="blood_type_ab" value="AB" {% if user_detail["blood_type"] == "AB" %} checked {% endif %}>AB
+                        </label>
+                        <label for="blood_type_no_answer">
+                            <input type="radio" name="blood_type" id="blood_type_no_answer" value="no_answer" {% if user_detail["blood_type"] == "no_answer" %} checked {% endif %}>わからない
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="">右の視力</label></td>
+                    <td><input type="number" name="right_sight" id="" value="{{user_detail['right_sight']}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="">左の視力</label></td>
+                    <td><input type="number" name="left_sight" id="" value="{{user_detail['left_sight']}}"></td>
+                </tr>
+                <tr>
+                    <td><span for="">歯の噛み合わせ</span></td>
+                    <td>
+                        <label for="teeth_bite_ok">
+                            <input type="radio" name="teeth_bite" id="teeth_bite_ok" value="0" {% if user_detail["teeth_bite"] == "0" %} checked {% endif %}>揃っている
+                        </label>
+                        <label for="teeth_bite_ng">
+                            <input type="radio" name="teeth_bite" id="teeth_bite_ng" value="1" {% if user_detail["teeth_bite"] == "1" %} checked {% endif %}>揃っていない
+                        </label>
+                        <label for="teeth_bite_no_answer">
+                            <input type="radio" name="teeth_bite" id="teeth_bite_no_answer" value="no_answer" {% if user_detail["teeth_bite"] == "no_answer" %} checked {% endif %}>わからない
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+<script>
+    jQuery(function($){
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+    });
+</script>

@@ -1,0 +1,66 @@
+
+</section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td><label for="birthday">誕生日</label></td>
+                    <td><input type="date" name="birthday" id="birthday" value="{{user_detail['birthday']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><span for="">性別</span></td>
+                    <td>
+                        <label for="gender_m">
+                            <input type="radio" name="gender" id="gender_m" value="0" {% if user_detail["gender"] == "0" %} checked {% endif %}>男
+                        </label>
+                        <label for="gender_f">
+                            <input type="radio" name="gender" id="gender_f" value="1" {% if user_detail["gender"] == "1" %} checked {% endif %}>女
+                        </label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="occupation">職業</label></td>
+                    <td><input type="text" name="occupation" id="occupation" value="{{user_detail['occupation']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><span for="">結婚</span></td>
+                    <td>
+                        <label for="partner_0">
+                            <input type="radio" name="partner" id="partner_0" value="0" {% if user_detail["partner"] == "0" %} checked {% endif %}>独身
+                        </label>
+                        <label for="partner_1">
+                            <input type="radio" name="partner" id="partner_1" value="1" {% if user_detail["partner"] == "1" %} checked {% endif %}>結婚
+                        </label>
+                        <label for="partner_2">
+                            <input type="radio" name="partner" id="partner_2" value="2" {% if user_detail["partner"] == "2" %} checked {% endif %}>その他
+                        </label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="sports_history">運動歴</label></td>
+                    <td>
+                        <textarea type="textarea" name="sports_history" id="sports_history" rows="5" cols="60">{{user_detail['sports_history']}}</textarea>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+<section>
+<script>
+    jQuery(function($){
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+    });
+</script>

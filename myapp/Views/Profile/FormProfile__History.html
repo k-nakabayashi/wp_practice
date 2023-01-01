@@ -1,0 +1,33 @@
+
+<section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td><label for="medical_history">既往歴</label></td>
+                    <td>
+                        <textarea type="textarea" name="medical_history" id="medical_history" rows="10" cols="60">{{user_detail['medical_history']}}</textarea>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+<script>
+    jQuery(function($){
+        // $("#{{prefix_form_id}}").submit( function(event){
+        //     event.preventDefault();
+        //     console.log($("#onset_time").val());
+        // });
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+    });
+</script>

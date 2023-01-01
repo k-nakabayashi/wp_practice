@@ -1,0 +1,25 @@
+<div class="m-Patient-List u-ch-mb-4">
+    
+    <p class="u-btn-wrapper">
+        <a href="{{HOST}}">
+            <input type="submit" value="患者様：追加" class="swpm-edit-profile-submit a-Btn" id="js-Move-Btn">
+        </a>
+    </p>
+
+    <ul class="c-Patient-List u-Item--left">
+        {% for user in user_list %}
+            <li><a class="test"href="/wp06/web/patient_detail/?id={{ user['user_id'] }}">{{ user['name'] }}様</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+
+// jQuery(function($){
+//     $("#js-Move-Btn").on("click", function (event)
+{
+//         alert(11)
+//     })
+// });
+
+</script>

@@ -1,0 +1,94 @@
+<script>
+
+function setBoxValue (target_name)
+{
+
+  return function (data, targetForm)
+{
+      let target = "";
+      const box_list = targetForm[target_name];
+      
+      for (let i = 0; i < box_list.length; i++)
+{
+        
+        if (box_list[i].checked)
+{
+          target += box_list[i].value + ",";
+        }
+      }
+ 
+      target = target.slice(0, -1);
+      data.set(target_name, target);
+
+      return data;
+  };
+}
+
+
+function setSbumit($, prefix_form_id, sub_title, setData = null){
+
+  let changeInputAvailable = (function(prefix_form_id)
+{
+
+    let input_target = `#${prefix_form_id} input, #${prefix_form_id} textarea`;
+
+    return function (flag)
+{
+      if (flag)
+{
+        $(input_target).each((index, element) => {
+          $(element).addClass("isDisabled");
+        });
+      } else {
+        $(input_target).each((index, element) => {
+          $(element).removeClass("isDisabled");
+        });
+      }
+    }
+  })(prefix_form_id);
+ 
+  $(`#${prefix_form_id}`).submit( function(event)
+{
+    
+      // クリックイベントをこれ以上伝播させない
+      event.preventDefault();
+
+      //inputデータを準備する
+      let targetForm = document.getElementById(prefix_form_id);
+      let data = new FormData(targetForm);
+      if (setData != null)
+{
+        data = setData(data, targetForm);
+      }
+      
+      changeInputAvailable(true);
+
+      //ajax通信を行う
+      $.ajax({
+          type: 'POST',
+          url: '{{ajaxUrl}}',
+          data: data,
+          processData: false,
+          contentType: false,
+          dataType: "json",
+          success: function( response ){
+            alert(`${sub_title}` + "\n" + response.message);
+            changeInputAvailable(false);
+          },
+          error: function(response){
+            alert("エラー発生。" + "\n" + response.message);
+            changeInputAvailable(false);
+          },
+      });
+
+        return true;
+    });
+}
+
+</script>
+
+<style>
+.a-Btn.isDisabled {
+    background: gray!important;
+}
+</style>

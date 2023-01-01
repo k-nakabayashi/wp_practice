@@ -1,0 +1,51 @@
+<section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td><label for="birthing_time">生まれるまでにかかった時間</label></td>
+                    <td><input type="number" name="birthing_time" id="birthing_time" value="{{user_detail['birthing_time']}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="birth_weight">出生時の体重</label></td>
+                    <td><input type="number" name="birth_weight" id="birth_weight" value="{{user_detail['birth_weight']}}"></td>
+                </tr>
+                <tr>
+                    <td><label for="birth_icu_day">ICUに入った日数</label></td>
+                    <td><input type="number" name="birth_icu_day" id="birth_icu_day" value="{{user_detail['birth_icu_day']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="birth">出産状況</label></td>
+                    <td>
+                        {% for index in range(0, birth_situation_count) %}
+                            <label for="js-birth_{{index}}">
+                                <input class="js-birth_{{index}}" type="checkbox" name="birth" id="js-birth_{{index}}" value="{{index}}" {% if user_detail["birth"][index] == true %} checked {% endif %}>{{birth_situation_list[index]}}</input>
+                            </label>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="birth_memo">出産状況 : その他</label></td>
+                    <td>
+                        <textarea type="textarea" name="birth_memo" id="birth_memo" rows="5" cols="60">{{user_detail['birth_memo']}}</textarea>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+<script>
+jQuery(function($){
+    setSbumit($, '{{prefix_form_id}}', '{{sub_title}}', setBoxValue("birth"));
+});
+</script>

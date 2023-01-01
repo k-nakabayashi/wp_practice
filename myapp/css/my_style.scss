@@ -1,0 +1,144 @@
+@import url("animation.min.css");
+
+/************************************************
+* reset
+************************************************/
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/************************************************
+* 変数
+************************************************/
+
+$link_color: #0011ff;
+$base_font_size: 16px;
+
+/************************************************
+* utils
+************************************************/
+
+.u-ch-mb-1 {
+    > * {
+        margin-bottom: 8px!important;
+    }
+}
+.u-ch-mb-2 {
+    > * {
+        margin-bottom: 16px!important;
+    }
+}
+.u-ch-mb-3 {
+    > * {
+        margin-bottom: 24px!important;
+    }
+}
+.u-ch-mb-4 {
+    > * {
+        margin-bottom: 32px!important;
+    }
+}
+
+.u-btn-wrapper {
+    &.isCenter {
+        text-align: center;
+    }
+}
+
+.u-Item--left {
+    text-align: left;
+    > * {
+        display: inline-block;
+        padding-right: 8px;
+    }
+}
+/************************************************
+* js
+************************************************/
+
+#js-ExamScore {
+    height: 60px;
+    align-items: center;    
+    display: flex;
+    > * {
+        margin-right: 16px;
+    }
+
+    &.isNotActive {
+        position: absolute;
+        bottom: 1000000px;
+        z-index: -99;
+    }
+}
+
+#search-result__list .a-List-Item {
+    display: inline-block;
+    margin-right: 15px;
+    padding: 5px;
+    background: #F2F2F2;
+    cursor: pointer;
+}
+
+/************************************************
+* atomic
+************************************************/
+.a-Title {
+    font-weight: bold;
+    font-size: ($base_font_size * 1.5);
+}
+.a-Sub-Title {
+    font-weight: bold;
+    font-size: ($base_font_size * 1.2);
+    // margin-top: 16px;
+    // margin-bottom: 16px;
+}
+
+/************************************************
+* プロフィール
+************************************************/
+.m-MyProfile {
+
+}
+/************************************************
+* 患者一覧
+************************************************/
+
+.c-Patient-List {
+    a {
+        color: $link_color;
+        padding: 8px;
+        &:hover {
+            color: white;
+            background: grey;
+        }
+    }
+}
+
+/************************************************
+* 患者詳細
+************************************************/
+.m-Patient-Detail {
+    .c-Profile__details {
+        margin-left: 40px;
+        .c-List {
+            text-align: left;
+            > * {
+                display: inline-block;
+                padding-right: 8px;
+            }
+        }
+
+        .a-LongText {
+            margin-left: 40px;
+        }
+    }
+}
+
+/************************************************
+* 診察診断
+************************************************/
+.m-Exam {
+
+}

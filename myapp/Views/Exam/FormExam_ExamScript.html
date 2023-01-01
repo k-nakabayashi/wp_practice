@@ -1,0 +1,934 @@
+<script>
+
+  let base_line = 500;
+  let x_line = 0
+  let y_line = 0;
+  let x_line2 = 0;
+  let y_line2 = 0;
+
+  jQuery(function ($)
+{
+
+    // 塗りつぶし色
+    const pathObjFillColor = "rgba( 0 , 0 , 255 , 0.3)";
+     
+    // class 一覧
+    let ExamManager;
+    let PointManager;
+    let Point;
+    let InnerDirectionManager;
+    let InnerDirection;
+    let DirectionManager;
+    let Direction;
+    let ScoreManager;
+    let Score;
+    let arc_denominator = 12;
+
+    let NO_SELECT_SHAPE_ID = -1;
+    let CANVAS_ID_POINT = 0;
+    let CANVAS_ID_DIR = 1;
+    let CANVAS_ID_SCORE = 2;
+
+
+
+  $(window).bind("load orientationchange",function(){
+    
+    // base_line = $(".c-Canvas").width() * 0.8
+    // console.log(base_line)
+    let x_line = base_line / 5;
+    let y_line = base_line / 5;
+    let x_line2 = base_line / 10;
+    let y_line2 = base_line / 7;
+
+    position_list = [
+      [x_line * 4, y_line2 * 2], [x_line * 3, y_line2 * 3 * ( 6 / 5)], [x_line * 4, y_line2 * 4 * ( 7 / 5 )],
+      [x_line * 1, y_line2 * 4 * ( 7 / 5 )], [x_line * 2, y_line2 * 3 * ( 6 / 5 )], [x_line * 1, y_line2 * 2],
+      [x_line * 2, y_line2 * 1],[x_line * 3, y_line2 * 1]
+    ]
+    
+    $(".c-Canvas").css("height", base_line)
+    $(".c-Canvas").css("width", base_line)
+
+    $(".a-Canvas").each(function(ele){
+      $(this).attr("height", base_line)
+      $(this).attr("width", base_line)
+    });
+
+
+
+    /************************************
+    * 共通処理
+    *************************************/
+
+    function getInitialDirList()
+{
+
+      let result_list = {};
+      for ( let i = 0; i < arc_denominator; ++i)
+{
+        result_list[`${i}`] = 0;
+      }
+      return result_list;
+    }
+
+    function setProtoType(TargetManager, target_list)
+{
+
+      let keys_list = Object.keys(target_list);
+
+      let target_key = ""
+
+      for (let i = 0; i < keys_list.length; ++i)
+{
+
+        target_key = keys_list[i];
+
+        TargetManager.prototype[target_key] = target_list[target_key]
+      }
+    }
+
+    function displayCanvas(target_id)
+{
+      let test = [0, 0];
+      test[target_id] = 1;
+
+      for (let i = 0; i < test.length; ++i)
+{
+        if (test[i] == 1)
+{
+          $(`.c-Canvas__${i}`).addClass("isActive");
+        } else {
+          $(`.c-Canvas__${i}`).removeClass("isActive");
+        }
+      }
+    }
+
+    /************************************
+    * ExamManager
+    *************************************/
+    (function setExam(Manager, Target)
+{
+      ExamManager = function (pointManager, directionManager, innerDirectionManager, scoreManager)
+{
+        pointManager.setInnerManagers(directionManager, innerDirectionManager, scoreManager)
+
+        this.pm = pointManager;
+        this.dm = directionManager;
+        this.inner_dm = innerDirectionManager;
+      }
+
+      ExamManager.prototype = {
+        /************************************
+        * DIR canvas用
+        *************************************/
+        backToPointCanvas: function ()
+{
+
+          displayCanvas(CANVAS_ID_POINT);
+
+          // 入力したスコアをpointに保持する。
+          this.pm.setScore($(".js-ScoreInput").val());
+
+          // 選択した方向を取得して、pointに保持する。
+          let result = this.pm.setDirectionList(this.dm.getTempTargetList());
+
+          // 方向のキャンバスを白紙にする。
+          this.dm.resetFill_ForAll();
+
+          // 反応点を塗り潰す。
+          if (result)
+{
+            this.pm.fill(this.pm.getTargetShapePointId());
+          } else {
+            this.pm.resetFill(this.pm.getTargetShapePointId());
+          }
+
+          this.pm.draw();
+        },
+        moveToScoreCanvas: function ()
+{
+
+        },
+        setPointToInput: function ()
+{
+          /*
+          [
+            [0,1,0,1,0,1,0,...],
+            [0,1,0,1,0,1,1,...],
+            [0,1,0,1,1,,0,1,0,...]
+          ]
+          */
+          let point_list = this.pm.getPointList();
+
+          for (let point_index = 0; point_index < Object.keys(point_list).length; ++point_index)
+{
+            $(`#score__${point_index}`).val(point_list[point_index]['score']);
+            $(`#direction__${point_index}`).val(point_list[point_index]['direction']);
+          }
+
+          return point_list;
+        },
+        /************************************
+        * SCORE canvas用
+        *************************************/
+        backToDirectionCanvas: function ()
+{
+
+        },
+        getScoreList: function ()
+{
+
+        },
+      };
+
+    })();
+
+    /************************************
+    * Point
+    *************************************/
+    (function sePointEnv()
+{
+      PointManager = function (canvas)
+{
+
+        this.canvas = canvas;
+        this.context = this.canvas.getContext("2d");
+
+        this.target_list = []; //Point
+        this.target_shape_id = NO_SELECT_SHAPE_ID;
+
+        this.dirManager = "";
+        this.scoreManager = "";
+      };
+
+      PointManager.prototype = {
+
+        setInnerManagers: function (_dirManager, _innerDirManager, _scoreManager)
+{
+          this.dirManager = _dirManager;
+          this.innerDirManager = _innerDirManager;
+          this.scoreManager = _scoreManager;
+        },
+
+        getPointList: function ()
+{
+          // JSON.stringify(Object.values(this.pm.target_list[0]['direction_list']));
+          let result_list = [];
+
+          this.target_list.forEach(function (target)
+{
+            result_list.push({
+              'score': target.getScore(),
+              'direction': target.getJsonTargetList()
+            });
+            // result_list.push(target.getJsonTargetList());
+          })
+
+          return result_list;
+        },
+
+        /************************************
+        * Dir系
+        *************************************/
+        setDirectionList: function (direction_list)
+{
+
+          // pointに方向を設定する
+          this.target_list[this.target_shape_id].setDirectionList(direction_list);
+
+          // InnerDirに方向を設定する。
+          this.innerDirManager.setDirectionList(this.target_shape_id, direction_list);
+
+          let key_list = Object.keys(direction_list);
+          let target_key = ""
+
+          //方向が未選択の場合
+          for (let i = 0; i < key_list.length; ++i)
+{
+
+            target_key = key_list[i];
+            if (direction_list[target_key] == 1)
+{
+              return true;
+            }
+          }
+
+          return false;
+        },
+        /************************************
+        * score系
+        *************************************/
+        setScore: function (_score)
+{
+          this.target_list[this.target_shape_id].setScore(_score);
+        },
+
+        /************************************
+        * 差分
+        *************************************/
+        click: function ()
+{
+
+          this.canvas.addEventListener('click', e => {
+            
+           
+
+            const rect = e.target.getBoundingClientRect();
+            const [w, h] = [this.canvas.width / this.canvas.clientWidth, this.canvas.height / this.canvas.clientHeight];
+            const [x, y] = [(e.clientX - rect.left) * w, (e.clientY - rect.top) * h];
+
+            const target_index = this.isIn(x, y);
+
+            if (target_index != NO_SELECT_SHAPE_ID)
+{
+              
+               console.log($("#js-ExamScore").removeClass("isNotActive"))
+
+              this.selectShapePointId(this.target_list[target_index].shape_id);
+              this.openNextCanvas(this.getTargetShapePointId())
+              this.scoreManager.displayInput(this.target_list[target_index].score);
+
+              $("#js-Score").text(target_index + 1)
+              
+            } else {
+
+              this.clearTargetShapePointId();
+
+            }
+
+          }, false);
+        },
+        toggleFill: function (target_index)
+{
+          if (target_index != NO_SELECT_SHAPE_ID)
+{
+            if (this.target_list[target_index].isFilled())
+{
+              this.resetFill(target_index);
+            } else {
+              this.fill(target_index);
+            }
+          }
+        },
+
+        openNextCanvas: function (target_index)
+{
+          $(".c-Canvas__1 > .c-Item > .js-Title").text(`${target_index + 1}番：診断方向`);
+          this.dirManager.drawWithTempTargetList(
+            this.target_list[target_index].getDirectionList()
+          );
+
+          displayCanvas(CANVAS_ID_DIR);
+        },
+      }
+
+      Point = function (shape_id, callBack)
+{
+
+        // id
+        this.shape_id = shape_id;
+
+        // 描画系
+        this.callBack = callBack;   // パスを作成する関数
+        this.filled = false;    // 塗りつぶしフラグ
+
+        this.text = "";
+
+        // 診断系
+        this.direction_list = getInitialDirList();
+        this.score = 0;
+
+      }
+
+      Point.prototype = {
+        getJsonTargetList: function ()
+{
+          return JSON.stringify(Object.values(this.direction_list));
+        },
+        /************************************
+         * Dir系
+        *************************************/
+        setDirectionList: function (_direction_list)
+{
+          this.direction_list = _direction_list;
+        },
+        getDirectionList: function ()
+{
+          return this.direction_list;
+        },
+        /************************************
+         * Score系
+        *************************************/
+        setScore: function (_score)
+{
+          this.score = _score;
+        },
+        getScore: function ()
+{
+          return this.score;
+        }
+      };
+
+    })();
+
+    /************************************
+    * InnerDirection
+    *************************************/
+    (function setInnerDirectionEnv()
+{
+      InnerDirectionManager = function (canvas)
+{
+
+        this.canvas = canvas;
+        this.context = this.canvas.getContext("2d");
+
+        this.target_list = []; //InnerDirection
+        this.target_shape_id = NO_SELECT_SHAPE_ID;
+      };
+
+      InnerDirectionManager.prototype = {
+
+        getJsonTargetList: function ()
+{
+          let result_list = [];
+
+          this.target_list.forEach(function (target)
+{
+            result_list.push(target.getJsonTargetList());
+          })
+
+          return result_list;
+        },
+
+        /************************************
+        * Dir系
+        *************************************/
+        setDirectionList: function (point_shape_id, direction_list)
+{
+          //todo : どの反応点の
+          let target = point_shape_id * arc_denominator;
+
+          for ( let i = 0; i < arc_denominator; ++i )
+{
+            if (direction_list[`${i}`] === 1)
+{
+              this.fill(target);
+            } else {
+              this.resetFill(target);
+            }
+
+            target += 1;
+          }
+
+          // console.log(direction_list);
+          // console.log(this.target_list);
+
+          this.draw();
+        },
+        /************************************
+        * 差分
+        *************************************/
+        click: function ()
+{
+
+        },
+        toggleFill: function (target_index)
+{
+          if (target_index != NO_SELECT_SHAPE_ID)
+{
+            if (this.target_list[target_index].isFilled())
+{
+              this.resetFill(target_index);
+            } else {
+              this.fill(target_index);
+            }
+          }
+        },
+      }
+
+      InnerDirection = function (shape_id, callBack)
+{
+
+        // id
+        this.shape_id = shape_id;
+
+        // 描画系
+        this.callBack = callBack;   // パスを作成する関数
+        this.filled = false;    // 塗りつぶしフラグ
+
+        // 診断系
+        this.direction_list = getInitialDirList();
+        this.score = 0;
+
+      }
+
+      InnerDirection.prototype = {
+        getJsonTargetList: function ()
+{
+          return JSON.stringify(Object.values(this.direction_list));
+        },
+        /************************************
+         * Target系
+        *************************************/
+        setDirectionList: function (_direction_list)
+{
+          this.direction_list = _direction_list;
+        },
+        getDirectionList: function ()
+{
+          return this.direction_list;
+        },
+      };
+    })();
+
+    /************************************
+    * Direction
+    *************************************/
+    (function setDirectionEnv()
+{
+
+      DirectionManager = function (canvas)
+{
+        this.canvas = canvas;
+        this.context = this.canvas.getContext("2d");
+
+        this.target_list = []; //Direction
+        this.target_shape_id = NO_SELECT_SHAPE_ID;
+
+        this.temp_target_list = getInitialDirList();
+      };
+
+      DirectionManager.prototype = {
+
+        drawWithTempTargetList: function (_temp_target_list)
+{
+          this.temp_target_list = _temp_target_list;
+
+          let key_list = Object.keys(this.temp_target_list);
+          let target_key = "";
+
+          for (let i = 0; i < key_list.length; ++i)
+{
+
+            target_key = key_list[i];
+
+            if (this.temp_target_list[target_key] === 1)
+{
+              this.fill(parseInt(target_key));
+            } else {
+              this.resetFill(parseInt(target_key));
+            }
+          }
+
+          this.draw();
+        },
+        /************************************
+        * 差分
+        *************************************/
+        resetFill_ForAll: function ()
+{
+          for (let target_index = 0; target_index < Object.keys(this.target_list).length; ++target_index)
+{
+            this.resetFill(target_index);
+          }
+          this.draw();
+
+          this.temp_target_list = getInitialDirList();
+        },
+
+        click: function ()
+{
+          this.canvas.addEventListener('click', e => {
+
+            const rect = e.target.getBoundingClientRect();
+            const [w, h] = [this.canvas.width / this.canvas.clientWidth, this.canvas.height / this.canvas.clientHeight];
+            const [x, y] = [(e.clientX - rect.left) * w, (e.clientY - rect.top) * h];
+
+            const target_index = this.isIn(x, y);
+
+            this.toggleFill(this.isIn(x, y));
+            this.draw();
+
+          }, false);
+        },
+
+        toggleFill: function (target_index)
+{
+          if (target_index != NO_SELECT_SHAPE_ID)
+{
+
+            if (this.target_list[target_index].isFilled())
+{
+              this.resetFill(target_index);
+              this.removeTempTargetList(target_index);
+
+            } else {
+              this.fill(target_index);
+              this.addTempTargetList(target_index);
+            }
+          }
+        },
+
+        addTempTargetList: function (direction_shape_id)
+{
+          this.temp_target_list[`${direction_shape_id}`] = 1;
+          return true;
+        },
+        removeTempTargetList: function (direction_shape_id)
+{
+          this.temp_target_list[`${direction_shape_id}`] = 0;
+          return true;
+        },
+
+        clearTempTargetList: function ()
+{
+          this.temp_target_list = getInitialDirList();
+        },
+
+        getTempTargetList: function ()
+{
+          return this.temp_target_list;
+        },
+
+      }
+
+      Direction = function (shape_id, callBack)
+{
+
+        // id
+        this.shape_id = shape_id;
+
+        // 描画系
+        this.callBack = callBack;   // パスを作成する関数
+        this.filled = false;    // 塗りつぶしフラグ
+      }
+
+      Direction.prototype = {
+      };
+
+    })();
+
+    /************************************
+    * Score
+    *************************************/
+    (function setScoreEnv()
+{
+
+      ScoreManager = function ()
+{
+        // this.targetLabel_id = "#js-ScoreTargetLabel";
+        // this.$target_input = $("#js-ScoreInput")
+      };
+
+      ScoreManager.prototype = {
+        displayInput: function (score)
+{
+          //未設定の場合は0にする。
+          $("#js-ScoreInput").val(score);
+        }
+      }
+
+      Score = function (shape_id, callBack)
+{
+        let score = 0;
+      }
+
+      Score.prototype = {
+      };
+
+    })();
+
+    /************************************
+    * 描画処理のまとめ
+    *************************************/
+    let arcDrawer = function (
+      path_call_back_list, 
+      denominator,
+      offset,
+      radius, arc_x_center, arc_y_center,
+      start_shape_id,
+      hasStyle,
+      )
+{
+
+      let base_pi = 360 / denominator;
+      let initial_start = -90 + (base_pi / 2);
+
+      let start = 0;
+      let end = 0;
+
+      for (let i = 0; i < denominator; ++i)
+{
+        path_call_back_list.push(function ( context )
+{
+
+          this.shape_id = start_shape_id + i;
+          //中心
+          context.moveTo(arc_x_center, arc_y_center); // 中心
+
+          //円
+          context.arc(
+            arc_x_center, arc_y_center, radius,
+            (initial_start + base_pi * i + offset) * Math.PI / 180,
+            (initial_start + base_pi * (i + 1) - offset) * Math.PI / 180,
+            false
+          );
+
+          if (hasStyle)
+{
+            if (Number.isInteger(i / 2))
+{
+              context.strokeStyle = "red";
+            } else {
+              context.strokeStyle = "green";
+            }
+          } else {
+            context.strokeStyle = "transparent";
+          }
+
+          context.lineWidth = 2;
+          context.closePath(); // 描画終了
+
+        });
+      }
+      return path_call_back_list;
+
+    }
+
+    function drawDirections(canvas_id, CanvasManager, TargetType)
+{
+      let radius =  base_line / (2 * 1.1);
+      let offset = 2;
+      let arc_x_center = x_line * 2.5;
+      let arc_y_center = y_line * 2.5;
+
+      // 共通
+      const cvs = document.getElementById(canvas_id);
+      let canvasManager = new CanvasManager(cvs);
+
+      canvasManager.execute(
+        arcDrawer([], arc_denominator, offset, radius, arc_x_center, arc_y_center, 0, true), 
+        TargetType
+      );
+
+      return canvasManager;
+
+    }
+
+    function drawPoints(canvas_id, CanvasManager, TargetType)
+{
+
+      let path_call_back_list = [];
+
+      for (let shape_id = 0; shape_id < Object.keys(position_list).length; ++shape_id)
+{
+        path_call_back_list.push(function (context)
+{
+          this.shape_id = shape_id;
+          context.lineWidth = 2;
+          context.strokeStyle = "red";
+          context.arc(position_list[shape_id][0], position_list[shape_id][1], 30, 0, 2 * Math.PI);
+
+          context.textAlign = "center";
+          context.textBaseline = 'middle';
+          context.font = "24px ＭＳ ゴシック";
+          context.fillText(this.score, position_list[shape_id][0], position_list[shape_id][1])
+        });
+      }
+
+
+      // 共通
+      const cvs = document.getElementById(canvas_id);
+      let canvasManager = new CanvasManager(cvs);
+      canvasManager.execute(path_call_back_list, TargetType);
+
+      return canvasManager;
+    }
+
+    function drawInnerDirections(canvas_id, CanvasManager, TargetType)
+{
+      let radius =  base_line * 1.5;
+      let offset = 0;
+
+      let path_call_back_list = [];
+
+
+      for (let index = 0; index < Object.keys(position_list).length; ++index)
+{
+
+        path_call_back_list = arcDrawer(
+          path_call_back_list, 
+          arc_denominator, 
+          offset,
+          radius, 
+          position_list[index][0], position_list[index][1],
+          index * 12,
+          false
+        );
+      }
+
+
+      // 共通
+      const cvs = document.getElementById(canvas_id);
+      let canvasManager = new CanvasManager(cvs);
+      canvasManager.execute(path_call_back_list, TargetType);
+
+      return canvasManager;
+    }
+
+    /************************************
+    * 処理を実行する
+    *************************************/
+    (function main()
+{
+
+      let manager_method_list = {
+        /************************************
+        * 描画の開始
+        *************************************/
+
+        execute: function (path_call_back_list, TargetType)
+{
+          for (let shape_id = 0; shape_id < Object.keys(path_call_back_list).length; ++shape_id)
+{
+            this.addTarget(shape_id, path_call_back_list[shape_id], TargetType);
+          }
+          this.draw();
+          this.click();
+        },
+        /************************************
+        * 描画系
+        *************************************/
+        addTarget: function (shape_id, callBack, TargetType)
+{
+          this.target_list.push(new TargetType(shape_id, callBack));
+        },
+        draw: function ()
+{
+          const context = this.canvas.getContext("2d");
+          context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.target_list.forEach(point => point.draw(this.context));
+        },
+        fill: function (target_index)
+{
+          if (target_index != NO_SELECT_SHAPE_ID)
+{
+            this.target_list[target_index].fill();
+          }
+        },
+        resetFill: function (target_index)
+{
+          if (target_index != NO_SELECT_SHAPE_ID)
+{
+            this.target_list[target_index].resetFill();
+          }
+        },
+        isIn: function (x, y)
+{
+          for (let i = Object.keys(this.target_list).length - 1; i >= 0; i--)
+{
+            if (this.target_list[i].isIn(this.context, x, y))
+{
+              return i;
+            }
+          }
+          return NO_SELECT_SHAPE_ID;
+        },
+        /************************************
+        * 選択対象の保持
+        *************************************/
+        selectShapePointId: function (shape_id)
+{
+          this.target_shape_id = shape_id
+        },
+        getTargetShapePointId: function ()
+{
+          return this.target_shape_id;
+        },
+        clearTargetShapePointId: function ()
+{
+          this.target_shape_id = NO_SELECT_SHAPE_ID
+        },
+      };
+
+      setProtoType(PointManager, manager_method_list)
+      setProtoType(DirectionManager, manager_method_list)
+      setProtoType(InnerDirectionManager, manager_method_list)
+
+      let inner_method_list = {
+        /************************************
+         * 描画系
+        *************************************/
+        draw(context)
+{
+          const cts = this.drawData(context);
+
+          if (this.filled)
+{
+            cts.fillStyle = pathObjFillColor;
+            cts.fill();
+          }
+          cts.stroke();
+          cts.restore();
+        },
+        isFilled()
+{ return this.filled; }, // 塗りつぶし状態の取得
+        fill()
+{ this.filled = true; }, // 塗りつぶしフラグをセット
+        resetFill()
+{ this.filled = false; }, // 塗りつぶしフラグをリセット
+        // 指定した座標が図形内にあるかチェック
+        // ※塗りつぶし状態のときは、false
+        isIn(context, x, y)
+{
+          return this.drawData(context).isPointInPath(x, y);
+        },
+        // 描画データの取得
+        drawData(context)
+{
+          context.beginPath();
+          context.save();
+          // パスをセット
+          this.callBack(context);
+          return context;
+        },
+      };
+
+      setProtoType(Point, inner_method_list)
+      setProtoType(Direction, inner_method_list)
+      setProtoType(InnerDirection, inner_method_list)
+
+      let pm = drawPoints("canvas_Point", PointManager, Point);
+      let dm = drawDirections("canvas_Direction", DirectionManager, Direction);
+      let inner_dm = drawInnerDirections("canvas_InnerDirection", InnerDirectionManager, InnerDirection);
+
+      let sm = new ScoreManager();
+
+      let examManager = new ExamManager(pm, dm, inner_dm, sm);
+
+      // $("#js-getPoint").on("click", function (e)
+{
+      //   e.preventDefault();
+      //   let point_list = examManager.setPointToInput();
+      // });
+
+      $("#js-backToPointCanvas").on("click", function (e)
+{
+
+        e.preventDefault();
+        examManager.backToPointCanvas()
+        let point_list = examManager.setPointToInput();
+        $("#js-Score").text("?")
+
+        $("#js-ExamScore").addClass("isNotActive")
+
+      });
+
+    })();
+
+
+    })
+
+  });
+
+</script>

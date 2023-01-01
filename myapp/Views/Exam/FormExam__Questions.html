@@ -1,0 +1,284 @@
+
+<form id="{{prefix_form_id}}" method="POST" class="m-Exam">
+
+  <section class="u-ch-mb-2">
+    <h2 class="a-Sub-Title">患者の情報</h2>
+
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="">患者名</label></td>
+          <td>
+            <div class="u-ch-mb-1">
+              <div class="search-result__hit-num">
+                <span>検索結果 : </span><span id="{{prefix_form_id}}__hit-num"></span>
+              </div>
+              <input type="text" id="search-text" placeholder="検索ワードを入力">
+              <div class="search-result">
+                <div id="search-result__list"></div>
+              </div>
+            </div>
+            <input type="text" name="patient_id" id="{{prefix_form_id}}__patient_name" value="" disabled>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="">本日の症状</label></td>
+          <td>
+            <textarea type="textarea" name="symptom" id="" rows="5" cols="60"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="">前回からの経過</label></td>
+          <td>
+            <textarea type="textarea" name="symptom_change" id="" rows="5" cols="60"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="">本日の食事</label></td>
+          <td>
+            <textarea type="textarea" name="today_meal" id="" rows="5" cols="60"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="">最近の食事の傾向</label></td>
+          <td>
+            <textarea type="textarea" name="meal" id="" rows="5" cols="60"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="">お酒　( g / 日)</label></td>
+          <td><input type="number" name="alcohol" id="" value="0"></td>
+        </tr>
+        <tr>
+          <td><label for="">タバコ ( 本 / 日) </label></td>
+          <td><input type="number" name="cigarettes" id="" value="0"></td>
+        </tr>
+        <tr>
+          <td><label for="">睡眠時間 ( 時間 / 日)</label></td>
+          <td><input type="number" name="sleeping_time" id="" value="0"></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </section>
+
+  <section class="u-ch-mb-2">
+    <h2 class="a-Sub-Title">診断</h2>
+    
+  
+    <div id="js-ExamScore" class="isNotActive">
+      <p><span id="js-Score">？</span>番：診断方向</p>
+      <div for="js-ScoreInput" id="js-ScoreInput-Wrapper">
+        <input type="number" id="js-ScoreInput" class="js-ScoreInput" value="0">
+      </div>
+
+      <p>
+        <input type="submit" id="js-backToPointCanvas" value="OK"/>
+      </p>
+    </div>
+        
+    <div class="c-Canvas">
+
+      <div class="c-Canvas__base"></div>
+  
+      <div  class="c-Canvas__0 isActive">
+        <canvas class="a-Canvas" id="canvas_InnerDirection" style="background: lightgray;"></canvas>
+      </div>
+      
+      <div class="c-Canvas__0 isActive">
+        <canvas class="a-Canvas" id="canvas_Point" style="background: transparent;"></canvas>
+      </div>
+  
+      <div  class="c-Canvas__1">
+        
+        <canvas class="a-Canvas" id="canvas_Direction" style="background: lightgray;"></canvas>
+      </div>
+    </div>
+    
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="">診断メモ</label></td>
+          <td>
+            <textarea type="textarea" name="check_memo" id="" rows="5" cols="60"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="u-ch-mb-2">
+    <h2 class="a-Sub-Title">施術内容</h2>
+    <table>
+        <tbody>
+          <tr>
+            <td><p>施術箇所</p></td>
+            <td>
+              {% for skill_name in skill_name_list %}
+              <label for="{{prefix_form_id}}_{{skill_name['en']}}" class="a-Input">
+                <input 
+                  name="perform_site" 
+                  type="checkbox" 
+                  id="{{prefix_form_id}}_{{skill_name['en']}}" 
+                  value="{{skill_name['en']}}">{{skill_name["ja"]}}</input>
+              </label>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <td><label for="">診断メモ</label></td>
+            <td>
+              <textarea type="textarea" name="perform_memo" id="" rows="5" cols="60"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="">施術直後の変化</label></td>
+            <td>
+              <textarea type="textarea" name="perform_effect" id="" rows="5" cols="60"></textarea>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  </section>
+    
+  <p class="u-btn-wrapper isCenter">
+    <input type="submit" value="更新" class="a-Btn" id="{{prefix_form_id}}__submit">
+    <input type="hidden" name="action" value="{{action}}">
+
+    <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+    <input type="hidden" name="perfomer_id" value="{{user_detail['user_id']}}">
+    <input type="hidden" name="patient_id" id="{{prefix_form_id}}__patient_id" value="">
+
+    {% for point in range(0, 7) %}
+    <input type="hidden" name="score_{{point+1}}" id="score__{{point}}" value="0">
+    {% endfor %}
+    {% for point in range(0, 7) %}
+    <input type="hidden" name="direction_{{point+1}}" id="direction__{{point}}" value="">
+    {% endfor %}
+    
+  </p>
+</form>
+
+
+<script>
+  
+  jQuery(function($){
+
+      setSbumit($, '{{prefix_form_id}}', '{{sub_title}}', setBoxValue("perform_site"));
+
+      // 操作するDom
+      let $patient_name = $('#{{prefix_form_id}}' + '__patient_name');
+      let $patient_id = $('#{{prefix_form_id}}' + '__patient_id');
+      let $search_hit_num = $('#{{prefix_form_id}}' + '__hit-num');
+      
+      // 施術者一覧を表示する
+      const user_list = JSON.parse('{{user_list}}'.replace(/&quot;/g,'"'));
+      const my_perfomer_id = "{{user_detail['perfomer_id']}}";
+  
+      searchWord = function(){
+          var searchResult,
+              searchText = $(this).val(), // 検索ボックスに入力された値
+              targetText;
+              // hitNum;
+
+          // 検索結果を格納するための配列を用意
+          searchResult = [];
+
+          // 検索結果エリアの表示を空にする
+          $('#search-result__list').empty();
+          $search_hit_num.empty();
+
+          // 検索ボックスに値が入ってる場合
+          if (searchText != '')
+{
+            for (var t = 0; t < Object.keys(user_list).length; ++ t)
+{
+              targetText = user_list[t]["name"];
+
+              // 検索対象となるリストに入力された文字列が存在するかどうかを判断
+              if (targetText.indexOf(searchText) != -1)
+{
+                // 存在する場合はそのリストのテキストを用意した配列に格納
+                searchResult.push(targetText);
+              }
+            }
+
+            // 検索結果をページに出力
+            for (var i = 0; i < searchResult.length; i ++)
+{
+              const target = i;
+              // let $result_dom = $('<input type="radio" name="perfomer_id_list" class="a-List-Item">');
+              let $result_dom = $(
+              `<label class="a-List-Item" id="user_list">
+                <input type="radio" name="user_list">
+                ${searchResult[target]}
+              </label>`);
+              
+              $result_dom.on("click", function (e)
+{
+                  //選択した値を表示・設定する
+                  $patient_name.val(searchResult[target]);
+                  $patient_id.val(user_list[target]['user_id']);
+
+                  console.log()
+                });
+
+              $result_dom.appendTo('#search-result__list');
+            }
+            
+            $search_hit_num.text(searchResult.length + '件見つかりました。');
+          }
+      };
+
+      // searchWordの実行
+      $('#search-text').on('input', searchWord);
+  });
+
+</script>
+
+
+<style>
+  .c-Canvas {
+    position: relative;
+    /* margin-top: 40px;
+    margin-bottom: 80px; */
+    overflow: hidden;
+  }
+
+  .a-Canvas {
+
+  }
+
+  .c-Canvas .c-Item {
+    margin-bottom: 16px;
+  }
+  
+  .c-Canvas__base {
+    position: absolute;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+  }
+  
+  .c-Canvas__0, .c-Canvas__1, .c-Canvas__2 {
+    position: absolute;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .c-Canvas__0.isActive, .c-Canvas__1.isActive, .c-Canvas__2.isActive {
+    z-index: 1;
+  }
+  
+  </style>
+  

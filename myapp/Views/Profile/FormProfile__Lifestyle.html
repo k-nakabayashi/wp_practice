@@ -1,0 +1,57 @@
+
+<section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td><span for="">お酒</span></td>
+                    <td>
+                        <label for="drinking_0">
+                            <input type="radio" name="drinking" id="drinking_0" value="0" {% if user_detail["drinking"] == "0" %} checked {% endif %}>飲まない
+                        </label>
+                        <label for="drinking_1">
+                            <input type="radio" name="drinking" id="drinking_1" value="1" {% if user_detail["drinking"] == "1" %} checked {% endif %}>時々
+                        </label>
+                        <label for="drinking_2">
+                            <input type="radio" name="drinking" id="drinking_2" value="2" {% if user_detail["drinking"] == "2" %} checked {% endif %}>毎日
+                        </label>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td><span for="">タバコ</span></td>
+                    <td>
+                        <label for="smoking_0">
+                            <input type="radio" name="smoking_0" id="smoking_0" value="0" {% if user_detail["smoking_0"] == "0" %} checked {% endif %}>吸わない
+                        </label>
+                        <label for="smoking_1">
+                            <input type="radio" name="smoking_1" id="smoking_1" value="1" {% if user_detail["smoking_0"] == "1" %} checked {% endif %}>時々
+                        </label>
+                        <label for="smoking_2">
+                            <input type="radio" name="smoking_2" id="smoking_2" value="2" {% if user_detail["smoking_0"] == "2" %} checked {% endif %}>毎日
+                        </label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="sleeping_time">睡眠時間</label></td>
+                    <td><input type="number" name="sleeping_time" id="sleeping_time" value="{{user_detail['sleeping_time']}}"></td>
+                </tr>
+            
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+<script>
+    jQuery(function($){
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+    });
+</script>

@@ -1,0 +1,98 @@
+<div class="m-Patient-Detail u-ch-mb-2">
+    <h1 class="a-Title">{{patient_detail['name']}}様</h1>
+    
+    <div class="c-Profile">
+        <h2 class="a-Sub-Title">連絡先</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><span>メール：</span>{{patient_detail['email']}}</li>
+        </ul>
+    </div>
+
+    <div class="c-Profile">
+        <h2 class="a-Sub-Title">基礎プロフィール</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><span>誕生日：</span>{{patient_detail['birthday']}}</li>
+            <li><span>年齢：</span>{{patient_detail['age']}}</li>
+            <li><span>性別：</span>{{patient_detail['gender']}}</li>
+            <li><span>職業：</span>{{patient_detail['occupation']}}</li>
+            <li><span>結婚：</span>{{patient_detail['partner']}}</li>
+            <li><span>運動歴：</span>{{patient_detail['sports_history']}}</li>
+        </ul>
+    </div>
+
+    <div class="c-Profile">
+        <h2 class="a-Sub-Title">身体プロフィール</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><span>身長：</span>{{patient_detail['body_height']}} cm</li>
+            <li><span>体重：</span>{{patient_detail['body_weight']}} kg</li>
+            <li><span>利き手：</span>{{patient_detail['dominant_hand']}}</li>
+            <li><span>最高血圧：</span>{{patient_detail['max_blood_preasure']}}</li>
+            <li><span>最低血圧：</span>{{patient_detail['min_blood_preasure']}}</li>
+            
+            <li><span>血液型：</span>{{patient_detail['blood_type']}}</li>
+            <li><span>右目の視力：</span>{{patient_detail['right_sight']}}</li>
+            <li><span>左目の視力：</span>{{patient_detail['left_sight']}}</li>
+            <li><span>歯の噛み合わせ：</span>{{patient_detail['teeth_bite']}}</li>
+        </ul>
+    </div>
+
+    <div class="c-Profile1">
+        <h2 class="a-Sub-Title">生活習慣</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><span>お酒：</span>{{patient_detail['drinking']}}</li>
+            <li><span>タバコ：</span>{{patient_detail['smoking']}}</li>
+            <li><span>睡眠時間 (基本)：</span>{{patient_detail['sleeping_time']}} 時間</li>
+        </ul>
+    </div>
+
+    <div class="c-Profile">
+        <h2 class="a-Sub-Title">痛みや症状</h2>
+        <ul class="c-Profile__details u-ch-mb-">
+            <li><span>痛みや症状の場所：</span><p class="a-LongText">{{patient_detail['symptom_site']}}</p></li>
+            <li><span>痛みの出る動作・姿勢：</span><p class="a-LongText">{{patient_detail['killing_movement']}}</p></li>
+            <li><span>いつ頃から発症：</span><p class="a-LongText">{{patient_detail['onset_time']}}</p></li>
+            <li><span>原因・きっかけ：</span><p class="a-LongText">{{patient_detail['casuse']}}</p></li>
+            <li><span>アレルギー症状：</span><p class="a-LongText">{{patient_detail['allergy']}}</p></li>
+        </ul>
+    </div>
+
+    <div class="c-Profile">
+        <h2 class="a-Sub-Title">出生時の状況</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><span>生まれるまでにかかった時間：</span>{{patient_detail['birthing_time']}} 時間</li>
+            <li><span>出生時の体重：</span>{{patient_detail['birth_weight']}} g</li>
+            <li>
+                <span>出産状況：</span>
+                <ul class="c-List ml-5">
+                    {% for index in range(0, birth_situation_count) %}
+                    {% if patient_detail["birth"][index] == true %}
+                        <li>{{birth_situation_list[index]}}、</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+            <li><span>出産状況その他：</span><p class="a-LongText">{{patient_detail['birth_memo']}}</p></li>
+        </ul>
+    </div>
+
+    <div class="c-Profile u-ch-mb-1">
+        <h2 class="a-Sub-Title">既往歴</h2>
+        <ul class="c-Profile__details u-ch-mb-1">
+            <li><p class="a-LongText">{{patient_detail['medical_history']}}</p></li>
+        </ul>
+    </div>
+
+    <div class="c-Profile u-ch-mb-1">
+        <h2 class="a-Sub-Title">該当項目</h2>
+        <div class="c-Profile__details">
+            <ul class="c-List">
+                {% for index in range(0, diseases_count) %}
+                {% if patient_detail["applicable_disease"][index] == true %}
+                    <li>{{diseases_list[index][diseases_name_index]}}、</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        
+    </div>
+</div>

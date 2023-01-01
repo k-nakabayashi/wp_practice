@@ -1,0 +1,122 @@
+
+<section>
+  <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+    <h2 class="a-Sub-Title">{{sub_title}}</h2>
+    <div class="u-ch-mb-1">
+      <div class="search-result__hit-num">
+        <span>検索結果 : </span><span id="{{prefix_form_id}}__hit-num"></span>
+      </div>
+      <input type="text" id="search-text" placeholder="検索ワードを入力">
+      <div class="search-result">
+        <div id="search-result__list"></div>
+      </div>
+    </div>
+
+    <table>
+        <tbody>
+            <tr>
+              <td><label for="">担当者名</label></td>
+              <td><input type="text" name="performer_name" id="{{prefix_form_id}}__performer_name" value="" disabled></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="u-btn-wrapper isCenter">
+      <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+      <input type="hidden" name="action" value="{{action}}">
+      <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+      <input type="hidden" name="perfomer_id" id="{{prefix_form_id}}__performer_id" value="{{user_detail['perfomer_id']}}">
+    </p>
+  </form>
+</section>
+
+<script>
+  
+    jQuery(function($){
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+
+        // 操作するDom
+        let $perfomer_name = $('#{{prefix_form_id}}' + '__performer_name');
+        let $perfomer_id = $('#{{prefix_form_id}}' + '__performer_id');
+        let $search_hit_num = $('#{{prefix_form_id}}' + '__hit-num');
+
+        // 施術者一覧を表示する
+        const user_list = JSON.parse('{{user_list}}'.replace(/&quot;/g,'"'));
+        const my_perfomer_id = "{{user_detail['perfomer_id']}}";
+
+        // 設定済みの担当者を表示する
+        if (my_perfomer_id != '' && my_perfomer_id != null)
+{
+          for (var t = 0; t < Object.keys(user_list).length; ++ t)
+{
+            let target = user_list[t];
+            if (target['user_id'] == my_perfomer_id)
+{
+            // if (target['member_id'] == my_perfomer_id)
+{
+              $perfomer_name.val(target['name']);
+              $perfomer_id.val(target['user_id']);
+              break;
+            }
+            
+          }
+        }
+
+        searchWord = function(){
+            var searchResult,
+                searchText = $(this).val(), // 検索ボックスに入力された値
+                targetText;
+                // hitNum;
+
+            // 検索結果を格納するための配列を用意
+            searchResult = [];
+
+            // 検索結果エリアの表示を空にする
+            $('#search-result__list').empty();
+            $search_hit_num.empty();
+
+            // 検索ボックスに値が入ってる場合
+            if (searchText != '')
+{
+              for (var t = 0; t < Object.keys(user_list).length; ++ t)
+{
+                targetText = user_list[t]["name"];
+
+                // 検索対象となるリストに入力された文字列が存在するかどうかを判断
+                if (targetText.indexOf(searchText) != -1)
+{
+                  // 存在する場合はそのリストのテキストを用意した配列に格納
+                  searchResult.push(targetText);
+                }
+              }
+
+              // 検索結果をページに出力
+              for (var i = 0; i < searchResult.length; i ++)
+{
+                const target = i;
+                // let $result_dom = $('<input type="radio" name="perfomer_id_list" class="a-List-Item">');
+                let $result_dom = $(
+                `<label class="a-List-Item" id="user_list">
+                  <input type="radio" name="user_list">
+                  ${searchResult[target]}
+                </label>`);
+                
+                $result_dom.on("click", function (e)
+{
+                    //選択した値を表示・設定する
+                    $perfomer_name.val(searchResult[target]);
+                    $perfomer_id.val(user_list[target]['user_id']);
+                  });
+
+                $result_dom.appendTo('#search-result__list');
+              }
+              
+              $search_hit_num.text(searchResult.length + '件見つかりました。');
+            }
+        };
+
+        // searchWordの実行
+        $('#search-text').on('input', searchWord);
+    });
+
+</script>
+

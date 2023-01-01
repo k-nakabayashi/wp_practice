@@ -1,0 +1,48 @@
+
+<section>
+    <form class="u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td><label for="symptom_site">痛みや症状の場所</label></td>
+                    <td><input type="text" name="symptom_site" id="symptom_site" value="{{user_detail['symptom_site']}}"></td>
+                </tr>
+                
+                <tr>
+                    <td><label for="killing_movement">痛みの出る動作・姿勢</label></td>
+                    <td><input type="text" name="killing_movement" id="killing_movement" value="{{user_detail['killing_movement']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="onset_time">いつ頃から発症</label></td>
+                    <td><input type="date" name="onset_time" id="onset_time" value="{{user_detail['onset_time']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="casuse">原因・きっかけ</label></td>
+                    <td><input type="text" name="casuse" id="casuse" value="{{user_detail['casuse']}}"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="allergy">アレルギー症状</label></td>
+                    <td><input type="text" name="allergy" id="allergy" value="{{user_detail['allergy']}}"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+
+<script>
+    jQuery(function($){
+        setSbumit($, '{{prefix_form_id}}', '{{sub_title}}');
+    });
+</script>

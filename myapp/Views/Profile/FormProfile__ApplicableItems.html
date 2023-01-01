@@ -1,0 +1,58 @@
+
+<section>
+    <form class="{{prefix_form_id}} u-ch-mb-2" id="{{prefix_form_id}}" method="POST">
+        <h2 class="a-Sub-Title">{{sub_title}}</h2>
+        <table>
+            <tbody>
+
+                <tr>
+                    <td>
+
+                        {% for i in range(0, disease_count) %}
+                            {% set index = loop.index - 1%}
+                            {% set disease = disease_list[index] %}
+                            {% set disease_id = disease["id"] %}
+
+                            <label for="applicable_disease_{{disease_id}}" class="a-Input">
+                                <!-- TODO: value =  applicable_disease_英語名-->
+                                <input type="checkbox" name="applicable_disease" 
+                                    id="applicable_disease_{{disease_id}}" 
+                                    value="{{disease_id}}" 
+                                    {% if user_detail["applicable_disease"][index] == true %} checked {% endif %}>
+                                    {{disease["name_ja"]}}
+                                </input>
+                            </label>
+                            
+                            {% if index != 0 %}
+                                {% if index % 4  == 0 %}
+                                    <br>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+        <p class="u-btn-wrapper isCenter">
+            <input type="submit" value="更新" class="swpm-edit-profile-submit a-Btn" id="{{prefix_form_id}}__submit">
+            <input type="hidden" name="action" value="{{action}}">
+            <input type="hidden" name="user_id" value="{{user_detail['user_id']}}">
+        </p>
+    </form>
+</section>
+
+<script>
+jQuery(function($){
+    setSbumit($, '{{prefix_form_id}}', '{{sub_title}}', setBoxValue("applicable_disease"));
+});
+</script>
+
+<style>
+.{{prefix_form_id}} .a-Input {
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: 23%;
+}
+</style>
