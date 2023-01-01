@@ -5,7 +5,7 @@
 // $spMember = new Myapp\Domain\Model\SpwmMember(SwpmAuth::get_instance());
 
 // // require_once "utils.php";
-// require_once "hooks.php";
+require_once "hooks.php";
 
 //画面系
 // require_once "shortcodes.php"; // ssr

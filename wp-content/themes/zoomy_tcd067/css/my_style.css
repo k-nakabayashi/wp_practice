@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("animation.min.css");
 /************************************************
 * reset
 ************************************************/
@@ -49,11 +48,7 @@
 ************************************************/
 #js-ExamScore {
   height: 60px;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  align-items: center;
   display: flex;
 }
 
@@ -73,6 +68,22 @@
   padding: 5px;
   background: #F2F2F2;
   cursor: pointer;
+}
+
+/************************************************
+* 装飾
+************************************************/
+.has_thumnail_border {
+  background: #ddd;
+  background-image: -webkit-linear-gradient(-45deg, #ddd 45%, #fff 45%, #fff 55%, #ddd 55%);
+  background-image: -moz-linear-gradient(-45deg, #ddd 45%, #fff 45%, #fff 55%, #ddd 55%);
+  background-image: -ms-linear-gradient(-45deg, #ddd 45%, #fff 45%, #fff 55%, #ddd 55%);
+  background-image: linear-gradient(-45deg, #ddd 45%, #fff 45%, #fff 55%, #ddd 55%);
+  -webkit-background-size: 5px 5px;
+  -moz-background-size: 5px 5px;
+  -ms-background-size: 5px 5px;
+  background-size: 5px 5px;
+  padding: 8px;
 }
 
 /************************************************
@@ -127,4 +138,3 @@
 /************************************************
 * 診察診断
 ************************************************/
-/*# sourceMappingURL=my_style.css.map */

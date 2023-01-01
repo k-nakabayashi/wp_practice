@@ -42,7 +42,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	if ( $is_tcd_membership_preview && $tcd_membership_post->main_image ) :
 		echo "\t\t";
 		echo '<div class="p-entry-photo__thumbnail">';
-		echo '<div class="p-entry-photo__thumbnail__inner">';
+		echo '<div class="p-entry-photo__thumbnail__inner has_thumnail_border">';
 		echo '<img src="' . esc_attr( $tcd_membership_post->main_image ) . '" alt="">';
 		echo $edit_buttons;
 		echo '</div>';
@@ -51,13 +51,13 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	elseif ( has_main_image() ) :
 		echo "\t\t";
 		echo '<div class="p-entry-photo__thumbnail">';
-		echo '<div class="p-entry-photo__thumbnail__inner">';
+		echo '<div class="p-entry-photo__thumbnail__inner has_thumnail_border">';
 		the_main_image( 'full', get_the_title() );
 		echo $edit_buttons;
 		echo '</div>';
 		echo '</div>';
 		echo "\n";
-	else :
+	else:
 		$image = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full' );
 		if ( $image ) :
 			// 正方形
@@ -73,7 +73,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 
 			echo "\t\t";
 			echo '<div class="p-entry-photo__thumbnail">';
-			echo '<div class="p-entry-photo__thumbnail__inner">';
+			echo '<div class="p-entry-photo__thumbnail__inner has_thumnail_border">';
 			the_post_thumbnail( $size );
 			echo $edit_buttons;
 			echo '</div>';
