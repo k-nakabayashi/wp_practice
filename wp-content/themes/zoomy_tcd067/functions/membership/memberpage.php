@@ -495,11 +495,12 @@ function the_tcd_membership_member_menu( $user = null ) {
 			<li class="p-member-menu__item<?php if ( 'photo' === $active ) echo ' is-active'; ?>"><a href="<?php echo esc_url( get_tcd_membership_memberpage_url( 'add_photo' ) ); ?>"><?php echo esc_html( get_tcd_membership_memberpage_title( 'add_photo' ) ); ?></a></li>
 <?php
 		endif;
-		if ( $dp_options['membership']['use_front_edit_blog'] && current_user_can( 'edit_posts' ) ) :
+		// HACK: モンキー：不要
+		// if ( $dp_options['membership']['use_front_edit_blog'] && current_user_can( 'edit_posts' ) ) :
 ?>
-			<li class="p-member-menu__item<?php if ( 'blog' === $active ) echo ' is-active'; ?>"><a href="<?php echo esc_url( get_tcd_membership_memberpage_url( 'add_blog' ) ); ?>"><?php echo esc_html( get_tcd_membership_memberpage_title( 'add_blog' ) ); ?></a></li>
+			<!-- <li class="p-member-menu__item<?php # if ( 'blog' === $active ) echo ' is-active'; ?>"><a href="<?php # echo esc_url( get_tcd_membership_memberpage_url( 'add_blog' ) ); ?>"><?php #echo esc_html( get_tcd_membership_memberpage_title( 'add_blog' ) ); ?></a></li> -->
 <?php
-		endif;
+		// endif;
 ?>
 			<li class="p-member-menu__item<?php if ( 'profile' === $active ) echo ' is-active'; ?>"><a href="<?php echo esc_url( get_tcd_membership_memberpage_url( 'edit_profile' ) ); ?>"><?php echo esc_html( get_tcd_membership_memberpage_title( 'profile' ) ); ?></a></li>
 			<li class="p-member-menu__item<?php if ( 'account' === $active ) echo ' is-active'; ?>"><a href="<?php echo esc_url( get_tcd_membership_memberpage_url( 'edit_account' ) ); ?>"><?php echo esc_html( get_tcd_membership_memberpage_title( 'account' ) ); ?></a></li>

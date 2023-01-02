@@ -236,3 +236,42 @@ function the_tcd_membership_preview_form2() {
 			</form>
 <?php
 }
+
+
+function display_hash_tags($post, $is_tcd_membership_preview, $add_style_class="") {
+    
+    $hash_tags = array();
+    $hash_tags_class = gettype($post->hash_tags);
+
+    if ($hash_tags_class == gettype("")) {
+        $tmp = preg_replace("/( |　)/", ",", $post->hash_tags);
+        $hash_tags = explode(",", $tmp);
+    } else {
+        $hash_tags = $post->hash_tags;
+    }
+    
+    $tag_list_str = "";
+
+    if (count($hash_tags) != 0):
+        foreach ($hash_tags as $tag):
+            if ($tag == "") {
+                continue;
+            }
+            
+            $inner = "";
+            if ( $is_tcd_membership_preview ) {
+                $inner = "<p class='a-Txt'>{$tag}</p>";
+            } else {
+                $inner = "
+                    <a href='' class='a-Txt'>
+                        {$tag}
+                    </a>
+                ";
+            }
+            $tag_list_str .= "<li>{$inner}</li>";
+
+        endforeach;
+    endif;
+
+    echo "<ul class='c-TagList {$add_style_class}'>{$tag_list_str}</ul>";
+}

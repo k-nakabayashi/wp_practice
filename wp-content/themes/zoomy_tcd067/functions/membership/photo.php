@@ -240,7 +240,6 @@ function tcd_membership_action_add_photo() {
 			$formdata['post_content'] = '';
 		} else {
 			$post_content = tcd_membership_sanitize_content( $formdata['post_content'] );
-			// $formdata = set_post_data($post_content, $formdata);
 		}
 		if( tcd_membership_check_forbidden_words( $formdata['post_content'] ) ) {
 			$error_messages[] = sprintf( __( '%s has forbidden words.', 'tcd-w' ), __( 'Content', 'tcd-w' ) );

@@ -275,7 +275,6 @@ function tcd_membership_action_add_blog() {
 		$tcd_membership_vars['error_message'] = implode( '<br>', $error_messages );
 	}
 }
-add_action( 'tcd_membership_action-add_blog', 'tcd_membership_action_add_blog' );
 
 /**
  * ブログ編集アクション
@@ -599,7 +598,6 @@ function tcd_membership_action_edit_blog() {
 		$tcd_membership_vars['error_message'] = implode( '<br>', $error_messages );
 	}
 }
-add_action( 'tcd_membership_action-edit_blog', 'tcd_membership_action_edit_blog' );
 
 /**
  * ブログ削除アクション
@@ -654,7 +652,6 @@ function tcd_membership_action_delete_blog() {
 	// テンプレート指定
 	$tcd_membership_vars['template'] = 'delete_article';
 }
-add_action( 'tcd_membership_action-delete_blog', 'tcd_membership_action_delete_blog' );
 
 /**
  * リピーターからブログ本文を生成
@@ -1014,3 +1011,8 @@ function tcd_membership_post_meta_value_utf8() {
 function tcd_membership_post_meta_value_utf8_esc_textarea( $safe_text, $text ) {
 	return str_replace( '&amp;#x', '&#x', $safe_text);;
 }
+
+# HACK: モンキー：不要
+// add_action( 'tcd_membership_action-add_blog', 'tcd_membership_action_add_blog' );
+// add_action( 'tcd_membership_action-edit_blog', 'tcd_membership_action_edit_blog' );
+// add_action( 'tcd_membership_action-delete_blog', 'tcd_membership_action_delete_blog' );

@@ -154,6 +154,10 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 
 		$cb_content_select = $cb_content['cb_content_select'];
 
+		if ($cb_content_select == "blog") {
+			continue;
+		}
+
 		if ( empty( $cb_content['cb_content_select'] ) || empty( $cb_content['cb_display'] ) ) continue;
 
 		$cb_item_class = 'p-cb__item p-cb__item--' . esc_attr( $cb_content['cb_content_select'] );
@@ -230,10 +234,10 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 						endif;
 					endif;
 ?>
-				<article class="p-blog-archive__item<?php if ( $show_counts ) echo ' has-counts'; ?>">
-					<a class="p-hover-effect--<?php echo esc_attr( $dp_options['hover_type'] ); the_tcd_membership_guest_require_login_class( $post->post_type, 'single', ' ' ); ?> u-clearfix" href="<?php the_permalink(); ?>">
+				<article class="m-Post p-blog-archive__item<?php if ( $show_counts ) echo ' has-counts'; ?>">
+					<div class="p-hover-effect--<?php echo esc_attr( $dp_options['hover_type'] ); the_tcd_membership_guest_require_login_class( $post->post_type, 'single', ' ' ); ?> u-clearfix">
 						<div class="p-blog-archive__item-thumbnail">
-							<div class="p-blog-archive__item-thumbnail__inner p-hover-effect__image js-object-fit-cover">
+							<a class="p-blog-archive__item-thumbnail__inner p-hover-effect__image js-object-fit-cover" href="<?php the_permalink(); ?>">
 <?php
 					echo "\t\t\t\t\t\t\t";
 					if ( has_main_image() ) :
@@ -257,18 +261,21 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 						echo '</div>' . "\n";
 					endif;
 ?>
-							</div>
+							</a>
 						</div>
-						<h2 class="p-blog-archive__item-title p-article-<?php echo esc_attr( $post->post_type ); ?>__title p-article__title js-multiline-ellipsis"><?php echo mb_strimwidth( strip_tags( get_the_title() ), 0, 80, '...' ); ?></h2>
-						<div class="p-blog-archive__item-author p-article__author<?php the_tcd_membership_guest_require_login_class( 'author', 'single', ' ' ); ?>" data-url="<?php echo esc_attr( get_author_posts_url( $author->ID ) ); ?>">
-							<span class="p-blog-archive__item-author_thumbnail p-article__author-thumbnail"><?php echo get_avatar( $author->ID, 96 ); ?></span>
-							<span class="p-blog-archive__item-author_name p-article__author-name"><?php echo esc_html( $author->display_name ); ?></span>
-						</div>
-					</a>
+					
+						<h2 class="a-Title p-blog-archive__item-title p-article-<?php echo esc_attr( $post->post_type ); ?>__title p-article__title js-multiline-ellipsis"><?php echo mb_strimwidth( strip_tags( get_the_title() ), 0, 80, '...' ); ?></h2>
+						
+						<?php
+							display_hash_tags($post, false, "p-blog-archive__item-title");
+						?>
+					
+					</div>
+					
 <?php
 					if ( $show_counts ) :
 ?>
-					<ul class="p-blog-archive__item-counts">
+					<ul class="c-Post-Action p-blog-archive__item-counts">
 <?php
 						if ( $cb_content['cb_show_comments_number'] && get_comments_number() ) :
 ?>
@@ -290,6 +297,10 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 <?php
 					endif;
 ?>
+						<div class="c-Author p-blog-archive__item-author p-article__author<?php the_tcd_membership_guest_require_login_class( 'author', 'single', ' ' ); ?>" data-url="<?php echo esc_attr( get_author_posts_url( $author->ID ) ); ?>">
+							<span class="p-blog-archive__item-author_thumbnail p-article__author-thumbnail"><?php echo get_avatar( $author->ID, 96 ); ?></span>
+							<span class="p-blog-archive__item-author_name p-article__author-name"><?php echo esc_html( $author->display_name ); ?></span>
+						</div>
 				</article>
 <?php
 				endwhile;
@@ -369,6 +380,7 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 	unset( $cb_queries[$key]['args'] );
 endif;
 ?>
+
 </main>
 <?php
 get_footer();

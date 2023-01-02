@@ -69,6 +69,8 @@ function get_header( $name = null, $args = array() ) {
  * @return void|false Void on success, false if the template does not exist.
  */
 function get_footer( $name = null, $args = array() ) {
+	# HACK: モンキー：不要
+	return "";
 	/**
 	 * Fires before the footer template file is loaded.
 	 *

@@ -168,40 +168,10 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	remove_filter( 'the_content', 'zoomy_url_auto_link', 20 );
 ?>				
 				<!-- 投稿詳細のハッシュタグリストを表示する -->
-				<ul class="c-TagList">
-					<?php 
-						$hash_tags = array();
-						$hash_tags_class = gettype($post->hash_tags);
-
-						if ($hash_tags_class == gettype("")):
-							$hash_tags = explode(",", $post->hash_tags);
-						else:
-							$hash_tags = $post->hash_tags;
-						endif;
-
-						if (count($hash_tags) != 0):
-							foreach ($hash_tags as $tag):
-								if ($tag == ""):
-									continue;
-								endif;
-								
-								$inner = "";
-								if ( $is_tcd_membership_preview ):
-									$inner = "<p class='a-Txt'>{$tag}</p>";
-								else:
-									$inner = "
-										<a href='' class='a-Txt'>
-											{$tag}
-										</a>
-									";
-								endif;
-								echo "<li>";
-								echo $inner;
-								echo "</li>";
-							endforeach;
-						endif;
-					?>
-				</ul>
+				<?php
+					display_hash_tags($post, $is_tcd_membership_preview);
+				?>
+				
 			</div>
 
 			<?php
