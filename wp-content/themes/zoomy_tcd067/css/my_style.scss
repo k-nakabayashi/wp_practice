@@ -206,7 +206,7 @@ $base_font_size: 16px;
     margin-left: 0!important;
 }
 
-.home {
+.home, .search {
     .c-TagList {
         .p-hover-effect--type1 {
             display: none;
@@ -247,3 +247,13 @@ $base_font_size: 16px;
     }
 }
 
+
+/************************************************
+* 投稿
+************************************************/
+
+.c-Search-Tab {
+    > * {
+        flex: 1 0 25%!important;
+    }
+}

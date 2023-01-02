@@ -22,6 +22,7 @@ endif;
 ?>
 	<div class="l-inner">
 <?php
+
 if ( have_posts() ) :
 	if ( isset( $_GET['sort'] ) && in_array( $_GET['sort'], array( 'likes', 'views' ) ) ) :
 		$sort = $_GET['sort'];
@@ -38,8 +39,18 @@ if ( have_posts() ) :
 		$_post_type = '';
 	endif;
 ?>
+
+<!-- 1個目 -->
+		<div class="c-Search-Tab p-blog-archive__sort">
+			<a class="p-blog-archive__sort-item" href="<?php echo esc_attr( $baseurl ); ?>"><span>話題の投稿</span></a>
+			<a class="p-blog-archive__sort-item <?php if ( ! $sort ) echo 'is-active'; ?>" href="<?php echo esc_attr( $baseurl ); ?>"><span>最新</span></a>
+			<a class="p-blog-archive__sort-item" href="<?php echo esc_attr( $baseurl ); ?>"><span>アカウント</span></a>
+			<a class="p-blog-archive__sort-item" href="<?php echo esc_attr( $baseurl ); ?>"><span>施術者</span></a>
+		</div>
+
+<!-- 2個目 -->
 		<div class="p-blog-archive__sort">
-			<a class="p-blog-archive__sort-item<?php if ( ! $sort ) echo ' is-active'; ?>" href="<?php echo esc_attr( $baseurl ); ?>"><span><?php _e( 'Newest', 'tcd-w' ); ?></span></a>
+			<!-- <a class="p-blog-archive__sort-item<?php #if ( ! $sort ) echo ' is-active'; ?>" href="<?php #echo esc_attr( $baseurl ); ?>"><span><?php #_e( 'Newest', 'tcd-w' ); ?></span></a> -->
 <?php
 	if ( $use_like ) :
 ?>
@@ -49,6 +60,9 @@ if ( have_posts() ) :
 ?>
 			<a class="p-blog-archive__sort-item<?php if ( 'views' === $sort ) echo ' is-active'; ?>" href="<?php echo esc_attr( add_query_arg( 'sort', 'views', $baseurl ) ); ?>"><span><?php _e( 'Sort by views', 'tcd-w' ); ?></span></a>
 		</div>
+
+
+		<!-- 検索結果一覧を表示する : start-->
 		<div class="p-blog-archive">
 <?php
 	if ( ( $dp_options['show_comments_number_archive' . $_post_type] && get_comments_number() ) || $dp_options['show_views_number_archive' . $_post_type] || ( $use_like && $dp_options['show_likes_number_archive' . $_post_type] ) ) :
@@ -79,10 +93,10 @@ if ( have_posts() ) :
 			endif;
 		endif;
 ?>
-			<article class="p-blog-archive__item<?php if ( $show_counts ) echo ' has-counts'; ?>">
-				<a class="p-hover-effect--<?php echo esc_attr( $dp_options['hover_type'] ); the_tcd_membership_guest_require_login_class( $post->post_type, 'single', ' ' ); ?> u-clearfix" href="<?php the_permalink(); ?>">
+			<article class="m-Post p-blog-archive__item<?php if ( $show_counts ) echo ' has-counts'; ?>">
+				<div class="p-hover-effect--<?php echo esc_attr( $dp_options['hover_type'] ); the_tcd_membership_guest_require_login_class( $post->post_type, 'single', ' ' ); ?> u-clearfix">
 					<div class="p-blog-archive__item-thumbnail p-hover-effect__image js-object-fit-cover">
-						<div class="p-blog-archive__item-thumbnail__inner">
+						<a class="p-blog-archive__item-thumbnail__inner"  href="<?php the_permalink(); ?>">
 <?php
 		echo "\t\t\t\t\t\t";
 		if ( has_main_image() ) :
@@ -114,14 +128,13 @@ if ( have_posts() ) :
 			echo '<div class="p-float-category u-visible-sm">' . implode( '', $catlist_float ) . '</div>' . "\n";
 		endif;
 ?>
-						</div>
+						</a>
 					</div>
 					<h2 class="p-blog-archive__item-title p-article-<?php echo esc_attr( $post->post_type ); ?>__title p-article__title js-multiline-ellipsis"><?php echo mb_strimwidth( strip_tags( get_the_title() ), 0, 80, '...' ); ?></h2>
-					<div class="p-blog-archive__item-author p-article__author<?php the_tcd_membership_guest_require_login_class( 'author', 'single', ' ' ); ?>" data-url="<?php echo esc_attr( get_author_posts_url( $author->ID ) ); ?>">
-						<span class="p-blog-archive__item-author_thumbnail p-article__author-thumbnail"><?php echo get_avatar( $author->ID, 96 ); ?></span>
-						<span class="p-blog-archive__item-author_name p-article__author-name"><?php echo esc_html( $author->display_name ); ?></span>
-					</div>
-				</a>
+					<?php
+						display_hash_tags($post, false, "p-blog-archive__item-title");
+					?>
+				</div>
 <?php
 		if ( $show_counts ) :
 ?>
@@ -147,11 +160,16 @@ if ( have_posts() ) :
 <?php
 		endif;
 ?>
+				<div class="c-Author p-blog-archive__item-author p-article__author<?php the_tcd_membership_guest_require_login_class( 'author', 'single', ' ' ); ?>" data-url="<?php echo esc_attr( get_author_posts_url( $author->ID ) ); ?>">
+					<span class="p-blog-archive__item-author_thumbnail p-article__author-thumbnail"><?php echo get_avatar( $author->ID, 96 ); ?></span>
+					<span class="p-blog-archive__item-author_name p-article__author-name"><?php echo esc_html( $author->display_name ); ?></span>
+				</div>
 			</article>
 <?php
 	endwhile;
 ?>
 		</div>
+		<!-- 検索結果一覧を表示する : end -->
 <?php
 	$paginate_links = paginate_links( array(
 		'current' => max( 1, get_query_var( 'paged' ) ),
@@ -175,11 +193,13 @@ if ( have_posts() ) :
 	endif;
 else :
 ?>
-			<p class="no_post"><?php _e( 'There is no registered post.', 'tcd-w' ); ?></p>
+			<!-- <p class="no_post"><?php #_e( 'There is no registered post.', 'tcd-w' ); ?></p> -->
+			<p class="no_post"><?php echo "検索結果はございません。" ?></p>
 <?php
 endif;
 ?>
 	</div>
 </main>
 <?php
+
 get_footer();

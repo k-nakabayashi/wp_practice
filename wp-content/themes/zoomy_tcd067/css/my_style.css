@@ -180,31 +180,31 @@
   margin-bottom: 0;
 }
 
-.home .c-TagList {
+.home .c-TagList, .search .c-TagList {
   height: 24px;
   padding-left: 18px;
 }
 
-.home .c-TagList .p-hover-effect--type1 {
+.home .c-TagList .p-hover-effect--type1, .search .c-TagList .p-hover-effect--type1 {
   display: none;
   margin: 0 !important;
 }
 
-.home .c-TagList > * {
+.home .c-TagList > *, .search .c-TagList > * {
   display: inline-block;
   height: inherit;
 }
 
-.home .c-TagList > * > * {
+.home .c-TagList > * > *, .search .c-TagList > * > * {
   display: inline-block;
   height: inherit;
 }
 
 @media only screen and (max-width: 991px) {
-  .home .m-Post .a-Title {
+  .home .m-Post .a-Title, .search .m-Post .a-Title {
     padding-top: 14px;
   }
-  .home .m-Post .c-Author {
+  .home .m-Post .c-Author, .search .m-Post .c-Author {
     bottom: 14px !important;
     left: 80%;
   }
@@ -213,4 +213,11 @@
 .c-Form-Confirm .a-Btn {
   margin-top: 16px !important;
   margin-bottom: 24px !important;
+}
+
+/************************************************
+* 投稿
+************************************************/
+.c-Search-Tab > * {
+  flex: 1 0 25% !important;
 }

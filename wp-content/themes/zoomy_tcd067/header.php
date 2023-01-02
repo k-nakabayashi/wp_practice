@@ -91,56 +91,56 @@ if (
 		<a href="#" id="js-sidemenu-close" class="p-close-button"></a>
 		<div class="p-sidemnu__inner">
 <?php
-	if ( $dp_options['sidemenu_photo_category_show_first'] ) :
-		$tax_orders = array( 'photo_category', 'category' );
-	else :
-		$tax_orders = array( 'category', 'photo_category' );
-	endif;
+	// if ( $dp_options['sidemenu_photo_category_show_first'] ) :
+	// 	$tax_orders = array( 'photo_category', 'category' );
+	// else :
+	// 	$tax_orders = array( 'category', 'photo_category' );
+	// endif;
 
-	foreach ( $tax_orders as $tax ) :
-		if ( 'category' == $tax && $dp_options['show_sidemenu_category'] ) :
-			$categories = wp_list_categories( array(
-				'depth' => 1,
-				'echo' => 0,
-				'exclude' => trim( $dp_options['sidemenu_category_exclude'], ' ,' ),
-				'show_count' => 0,
-				'title_li' => '',
-				'use_desc_for_title' => 0
-			) );
-			if ( $categories ) :
+	// foreach ( $tax_orders as $tax ) :
+		// if ( 'category' == $tax && $dp_options['show_sidemenu_category'] ) :
+		// 	$categories = wp_list_categories( array(
+		// 		'depth' => 1,
+		// 		'echo' => 0,
+		// 		'exclude' => trim( $dp_options['sidemenu_category_exclude'], ' ,' ),
+		// 		'show_count' => 0,
+		// 		'title_li' => '',
+		// 		'use_desc_for_title' => 0
+		// 	) );
+		// 	if ( $categories ) :
 ?>
-			<h2 class="p-sidemenu-categories-title"><i class="p-sidemenu-categories-title__icon"></i><?php echo esc_html( $dp_options['sidemenu_category_label'] ); ?></h2>
-			<ul class="p-sidemenu-categories">
+			<!-- <h2 class="p-sidemenu-categories-title"><i class="p-sidemenu-categories-title__icon"></i><?php echo esc_html( $dp_options['sidemenu_category_label'] ); ?></h2>
+			<ul class="p-sidemenu-categories"> -->
 <?php
-	echo $categories;
+	// echo $categories;
 ?>
-			</ul>
+			<!-- </ul> -->
 <?php
-			endif;
-		endif;
+			// endif;
+		// endif;
 
-		if ( 'photo_category' == $tax && $dp_options['show_sidemenu_photo_category'] && 'category' !== $dp_options['photo_category_slug'] ) :
-			$categories = wp_list_categories( array(
-				'depth' => 1,
-				'echo' => 0,
-				'exclude' => trim( $dp_options['sidemenu_photo_category_exclude'], ' ,' ),
-				'show_count' => 0,
-				'title_li' => '',
-				'taxonomy' => $dp_options['photo_category_slug'],
-				'use_desc_for_title' => 0
-			) );
-			if ( $categories ) :
+		// if ( 'photo_category' == $tax && $dp_options['show_sidemenu_photo_category'] && 'category' !== $dp_options['photo_category_slug'] ) :
+		// 	$categories = wp_list_categories( array(
+		// 		'depth' => 1,
+		// 		'echo' => 0,
+		// 		'exclude' => trim( $dp_options['sidemenu_photo_category_exclude'], ' ,' ),
+		// 		'show_count' => 0,
+		// 		'title_li' => '',
+		// 		'taxonomy' => $dp_options['photo_category_slug'],
+		// 		'use_desc_for_title' => 0
+		// 	) );
+		// 	if ( $categories ) :
 ?>
-			<h2 class="p-sidemenu-categories-title p-sidemenu-photo-categories-title"><i class="p-sidemenu-categories-title__icon"></i><?php echo esc_html( $dp_options['sidemenu_photo_category_label'] ); ?></h2>
-			<ul class="p-sidemenu-categories">
+			<!-- <h2 class="p-sidemenu-categories-title p-sidemenu-photo-categories-title"><i class="p-sidemenu-categories-title__icon"></i><?php echo esc_html( $dp_options['sidemenu_photo_category_label'] ); ?></h2>
+			<ul class="p-sidemenu-categories"> -->
 <?php
-	echo $categories;
+	// echo $categories;
 ?>
-			</ul>
+			<!-- </ul> -->
 <?php
-			endif;
-		endif;
-	endforeach;
+	// 		endif;
+	// 	endif;
+	// endforeach;
 
 	if ( is_mobile() ) :
 		$sidemenu_widget = 'sidemenu_widget_mobile';
