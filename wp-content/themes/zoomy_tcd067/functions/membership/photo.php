@@ -237,10 +237,8 @@ function tcd_membership_action_add_photo() {
 		}
 
 		if ( empty( $formdata['post_content'] ) ) {
-			debug_log("post_content なし！");
 			$formdata['post_content'] = '';
 		} else {
-			debug_log("\n == post_content あり！ ==");
 			$post_content = tcd_membership_sanitize_content( $formdata['post_content'] );
 			// $formdata = set_post_data($post_content, $formdata);
 		}
@@ -249,17 +247,14 @@ function tcd_membership_action_add_photo() {
 		}
 
 		if ( empty( $formdata['hash_tags'] ) ) {
-			debug_log("hash_tags なし！");
 			$formdata['search_text'] = $formdata['post_title'] . $formdata['post_content'];
 			$formdata['hash_tags'] = array();
 		} else {
-			debug_log("hash_tags あり！");
 			$result = set_post_data($formdata);
 			
 			if ($result == false) {
 				$error_messages[] = "不正な文字列が使用されています。";
 			} else {
-				debug_log("hash_tags取得！");
 				$formdata = $result;
 			}
 		}
