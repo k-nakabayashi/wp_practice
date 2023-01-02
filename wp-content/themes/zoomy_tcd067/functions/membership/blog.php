@@ -751,12 +751,13 @@ function is_tcd_membership_preview_blog() {
 function the_tcd_membership_preview_form() {
 	global $tcd_membership_vars, $tcd_membership_post;
 ?>
-			<form class="p-membership-form js-membership-form--normal" action="" method="post">
+			<form class="p-membership-form js-membership-form--normal test" action="" method="post">
 				<div class="p-membership-form__button">
 					<button class="p-button p-rounded-button p-submit-button" name="to_complete" type="submit" value="1"><?php _e( 'Save', 'tcd-w' ); ?></button>
 					<button class="p-membership-form__back-button" name="to_input" type="submit" value="1"><?php _e( 'Back', 'tcd-w' ); ?></button>
 					<input type="hidden" name="post_id" value="<?php echo esc_attr( $tcd_membership_post->ID ); ?>">
 					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'tcd-membership-' . $tcd_membership_vars['memberpage_type'] . '-' . $tcd_membership_post->ID ) ); ?>">
+					
 <?php
 	// post値維持用のinput[type="hidden"]出力
 	echo "\t\t\t\t\t";
@@ -841,12 +842,13 @@ function get_tcd_membership_form_input_keys( $post_type = 'post' ) {
 
 	$input_keys = array();
 
+	# HACK : モンキー：　search_textとhash_tagsを追加した。
 	if ( 'post' === $post_type ) {
 		$input_keys = array(
 			'post_title',
 			'post_status',
 			'category',
-			'main_image'
+			'main_image',
 		);
 
 		for ( $i = 0; $i < 10; $i++ ) {
@@ -863,7 +865,7 @@ function get_tcd_membership_form_input_keys( $post_type = 'post' ) {
 			'post_status',
 			'category',
 			'main_image',
-			'textalign'
+			'textalign',
 		);
 	}
 

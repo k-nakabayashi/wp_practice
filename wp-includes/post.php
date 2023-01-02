@@ -4040,6 +4040,7 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
  */
 function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true ) {
 	global $wpdb;
+	list($search_text, $hash_tags) = withdraw_search_text_and_hash_tags($postarr);
 
 	// Capture original pre-sanitized array for passing into filters.
 	$unsanitized_postarr = $postarr;
@@ -4066,6 +4067,8 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		'context'               => '',
 		'post_date'             => '',
 		'post_date_gmt'         => '',
+		'search_text'			=> '',
+		'hash_tags'				=> array(),
 	);
 
 	$postarr = wp_parse_args( $postarr, $defaults );
@@ -4287,7 +4290,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	} else {
 		$post_parent = 0;
 	}
-
+	
 	$new_postarr = array_merge(
 		array(
 			'ID' => $post_ID,
@@ -4370,7 +4373,9 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		'post_parent',
 		'menu_order',
 		'post_mime_type',
-		'guid'
+		'guid',
+		"search_text",
+		"hash_tags",
 	);
 
 	$emoji_fields = array( 'post_title', 'post_content', 'post_excerpt' );

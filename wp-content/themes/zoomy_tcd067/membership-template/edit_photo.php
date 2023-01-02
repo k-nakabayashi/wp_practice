@@ -113,6 +113,8 @@ else:
 	<div class="l-inner">
 		<div class="p-member-page p-edit-photo">
 			<form id="js-membership-edit-photo" class="p-membership-form js-membership-form--normal" action="" enctype="multipart/form-data" method="post">
+
+				<!-- 画像の添付 start -->
 				<div class="p-membership-form__body p-body p-membership-form__top">
 <?php
 	if ( ! empty( $tcd_membership_vars['error_message'] ) ) :
@@ -154,16 +156,24 @@ else:
 ?>
 					<p class="p-membership-form__remark"><?php _e( '* This photo will be a thumbnail preview.', 'tcd-w' ); ?><br><?php _e( '* Please select a local photo file, or drag and drop.', 'tcd-w' ); ?></p>
 				</div>
+
+				<!-- 投稿のテキスト start -->
 				<div class="p-membership-form__body p-body p-membership-form__bottom">
 					<p class="p-membership-form__post_title"><input type="text" name="post_title" value="<?php echo esc_attr( $tcd_membership_post->post_title ); ?>" placeholder="<?php esc_attr_e( 'Photo title (Required)', 'tcd-w' ); ?>" required></p>
+					<p class="p-membership-form__post_title"><input type="text" name="hash_tags" value="<?php echo esc_attr( $tcd_membership_post->hash_tags ); ?>" placeholder="タグ (スペースかカンマで区切ってください)"></p>
 
 					<input type="radio" class="p-membership-form__textalign-radio" id="p-membership-form__textalign-radio-center" name="textalign" value="center" <?php checked( 'center', $tcd_membership_post->textalign ); ?>>
 					<input type="radio" class="p-membership-form__textalign-radio" id="p-membership-form__textalign-radio-left" name="textalign" value="left" <?php checked( 'left', $tcd_membership_post->textalign ); ?>>
-					<div class="p-membership-form__textalign">
+					<!-- <div class="p-membership-form__textalign">
 						<label class="p-membership-form__textalign-label-center" for="p-membership-form__textalign-radio-center"><span>Center</span></label><label class="p-membership-form__textalign-label-left" for="p-membership-form__textalign-radio-left"><span>Left</span></label>
-					</div>
-					<textarea class="p-membership-form__post_content" name="post_content" placeholder="<?php esc_attr_e( 'Enter content', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->post_content ); ?></textarea>
+					</div> -->
+					<textarea class="p-membership-form__post_content text-left" name="post_content" placeholder="<?php esc_attr_e( 'Enter content', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->post_content ); ?></textarea>
 				</div>
+				
+
+				<!-- 投稿のテキスト end -->
+
+
 				<div class="p-membership-form__post_status">
 <?php
 	foreach ( get_tcd_membership_post_statuses( $tcd_membership_post ) as $post_status => $post_status_label ) :
@@ -173,6 +183,8 @@ else:
 	endforeach;
 ?>
 				</div>
+				<!-- 画像の添付 end -->
+
 				<div class="p-membership-form__button">
 					<button class="p-button p-rounded-button p-submit-button" name="to_confirm" type="submit" value="1"><?php _e( 'Preview Confirm', 'tcd-w' ); ?></button>
 					<input type="hidden" name="post_id" value="<?php echo esc_attr( $tcd_membership_post->ID ); ?>">

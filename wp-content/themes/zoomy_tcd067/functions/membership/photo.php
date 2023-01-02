@@ -170,7 +170,7 @@ function tcd_membership_action_add_photo() {
 		// プレビューからの戻る
 		if ( ! empty( $formdata['to_input'] ) ) {
 			// tcd_membership_postにフォーム値セット
-			$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+			$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
 
 			// ここで終了
 			return;
@@ -206,6 +206,8 @@ function tcd_membership_action_add_photo() {
 		} elseif ( ! empty( $formdata['delete-file_main_image'] ) ) {
 			$formdata['main_image'] = '';
 		}
+
+		// HACK: 画像はなくても良いが、現状は必須としよう
 		if ( empty( $formdata['main_image'] ) ) {
 			$error_messages[] = sprintf( __( '%s is required.', 'tcd-w' ), __( 'Photo', 'tcd-w' ) ) . sprintf( __( 'Please select a %s.', 'tcd-w' ), __( 'Photo', 'tcd-w' ) );
 		}
@@ -235,12 +237,31 @@ function tcd_membership_action_add_photo() {
 		}
 
 		if ( empty( $formdata['post_content'] ) ) {
+			debug_log("post_content なし！");
 			$formdata['post_content'] = '';
 		} else {
-			$formdata['post_content'] = tcd_membership_sanitize_content( $formdata['post_content'] );
+			debug_log("\n == post_content あり！ ==");
+			$post_content = tcd_membership_sanitize_content( $formdata['post_content'] );
+			// $formdata = set_post_data($post_content, $formdata);
 		}
 		if( tcd_membership_check_forbidden_words( $formdata['post_content'] ) ) {
 			$error_messages[] = sprintf( __( '%s has forbidden words.', 'tcd-w' ), __( 'Content', 'tcd-w' ) );
+		}
+
+		if ( empty( $formdata['hash_tags'] ) ) {
+			debug_log("hash_tags なし！");
+			$formdata['search_text'] = $formdata['post_title'] . $formdata['post_content'];
+			$formdata['hash_tags'] = array();
+		} else {
+			debug_log("hash_tags あり！");
+			$result = set_post_data($formdata);
+			
+			if ($result == false) {
+				$error_messages[] = "不正な文字列が使用されています。";
+			} else {
+				debug_log("hash_tags取得！");
+				$formdata = $result;
+			}
 		}
 
 		$post_statuses = get_tcd_membership_post_statuses( $tcd_membership_post );
@@ -251,23 +272,28 @@ function tcd_membership_action_add_photo() {
 		// エラーあり
 		if ( $error_messages ) {
 			// tcd_membership_postにフォーム値セット
-			$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+			$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
 
 		// エラーなし
 		} else {
 			// プレビュー確認
 			if ( ! empty( $formdata['to_confirm'] ) ) {
+				debug_log("プレビュー確認");
 				$tcd_membership_vars['add_photo']['confirm'] = true;
 				$tcd_membership_vars['confirm_page_leave'] = __( 'Post is not completed yet. Do you really leave this page?', 'tcd-w' );
 				$tcd_membership_vars['browser_back_alert_messege'] = __( 'If use browser back button, may be lost input data.', 'tcd-w' );
 
 				// tcd_membership_postにフォーム値セット
-				$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+				$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
+				// hash_tagsはarrray
+
 
 			// 完了
 			} elseif ( ! empty( $formdata['to_complete'] ) ) {
-				// 記事保存
-				$post_id = wp_insert_post( array(
+
+				debug_log("記事保存");
+
+				$insert_data = [
 					'post_author' => $user->ID,
 					'post_content' => $formdata['post_content'],
 					'post_name' => '',
@@ -276,8 +302,15 @@ function tcd_membership_action_add_photo() {
 					'post_title' => $formdata['post_title'],
 					'post_type' => $dp_options['photo_slug'],
 					'comment_status' => 'open',
-					'ping_status' => 'open'
-				) );
+					'ping_status' => 'open',
+					'search_text' => $formdata['search_text'],
+
+					// array型
+					'hash_tags' => $formdata['hash_tags'],
+				];
+
+				// 記事保存
+				$post_id = wp_insert_post($insert_data);
 
 				if ( $post_id ) {
 					// テンポラリー画像からmain_imageのurlに対応する画像情報配列を取得
@@ -373,7 +406,7 @@ function tcd_membership_action_edit_photo() {
 		// プレビューからの戻る
 		if ( ! empty( $formdata['to_input'] ) ) {
 			// tcd_membership_postにフォーム値セット
-			$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+			$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
 
 			// ここで終了
 			return;
@@ -454,7 +487,7 @@ function tcd_membership_action_edit_photo() {
 		// エラーあり
 		if ( $error_messages ) {
 			// tcd_membership_postにフォーム値セット
-			$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+			$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
 
 		// エラーなし
 		} else {
@@ -465,7 +498,7 @@ function tcd_membership_action_edit_photo() {
 				$tcd_membership_vars['browser_back_alert_messege'] = __( 'If use browser back button, may be lost input data.', 'tcd-w' );
 
 				// tcd_membership_postにフォーム値セット
-				$tcd_membership_post = tcd_membership_set_post_data_from_array( $tcd_membership_post, $formdata );
+				$tcd_membership_post = tcd_membership_set_post_data_from2_array( $tcd_membership_post, $formdata );
 
 			// 完了
 			} elseif ( ! empty( $formdata['to_complete'] ) ) {

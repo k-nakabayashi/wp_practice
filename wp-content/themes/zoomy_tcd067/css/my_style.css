@@ -14,6 +14,14 @@
 /************************************************
 * utils
 ************************************************/
+.u-mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.u-ch-mb-0 > * {
+  margin-bottom: 0 !important;
+}
+
 .u-ch-mb-1 > * {
   margin-bottom: 8px !important;
 }
@@ -41,6 +49,14 @@
 .u-Item--left > * {
   display: inline-block;
   padding-right: 8px;
+}
+
+.u-ch-inline-block > * {
+  display: inline-block;
+}
+
+.u-ch-text-left > * {
+  text-align: left;
 }
 
 /************************************************
@@ -138,3 +154,33 @@
 /************************************************
 * 診察診断
 ************************************************/
+/************************************************
+* 投稿
+************************************************/
+.c-Post-Block > * {
+  text-align: left !important;
+  display: block;
+}
+
+.c-Post-Block time {
+  text-align: right !important;
+}
+
+.c-Post-Block .c-TagList {
+  margin-left: 0 !important;
+}
+
+.c-Post-Block .c-TagList > * {
+  display: inline-block !important;
+  margin-right: 16px;
+}
+
+.c-Post-Block .c-TagList > * .a-Txt {
+  color: #0093c5;
+  margin-bottom: 0;
+}
+
+.c-Form-Confirm .a-Btn {
+  margin-top: 16px !important;
+  margin-bottom: 24px !important;
+}

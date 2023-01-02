@@ -157,7 +157,7 @@ else:
 				</div>
 				<div class="p-membership-form__body p-body p-membership-form__repeater">
 					<p class="p-membership-form__headline"><input type="text" name="headline" value="<?php echo esc_attr( $tcd_membership_post->headline ); ?>" placeholder="<?php esc_attr_e( 'Headline', 'tcd-w' ); ?>"></p>
-					<p class="p-membership-form__description"><textarea class="p-membership-form__post_content" name="description" placeholder="<?php esc_attr_e( 'Enter text', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->description ); ?></textarea></p>
+					<p class="p-membership-form__description"><textarea class="p-membership-form__post_content text-left" name="description" placeholder="<?php esc_attr_e( 'Enter text', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->description ); ?></textarea></p>
 <?php
 	tcd_membership_image_upload_field_tiny( array(
 		'indent' => 6,
@@ -184,7 +184,7 @@ else:
 ?>
 					<div class="p-membership-form__repeater<?php if ( $i_max < $i ) echo ' u-hidden'; ?>">
 						<p class="p-membership-form__headline"><input type="text" name="headline<?php echo $i; ?>" value="<?php echo esc_attr( $tcd_membership_post->{'headline' . $i} ); ?>" placeholder="<?php esc_attr_e( 'Headline', 'tcd-w' ); ?>"></p>
-						<p class="p-membership-form__description"><textarea class="p-membership-form__post_content" name="description<?php echo $i; ?>" placeholder="<?php esc_attr_e( 'Enter text', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->{'description' . $i} ); ?></textarea></p>
+						<p class="p-membership-form__description"><textarea class="p-membership-form__post_conten text-left" name="description<?php echo $i; ?>" placeholder="<?php esc_attr_e( 'Enter text', 'tcd-w' ); ?>" rows="10"><?php echo esc_textarea( $tcd_membership_post->{'description' . $i} ); ?></textarea></p>
 <?php
 	tcd_membership_image_upload_field_tiny( array(
 		'indent' => 6,

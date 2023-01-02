@@ -19,7 +19,14 @@ $base_font_size: 16px;
 /************************************************
 * utils
 ************************************************/
-
+.u-mb-0 {
+    margin-bottom: 0!important;
+}
+.u-ch-mb-0 {
+    > * {
+        margin-bottom: 0!important;
+    }
+}
 .u-ch-mb-1 {
     > * {
         margin-bottom: 8px!important;
@@ -52,6 +59,17 @@ $base_font_size: 16px;
     > * {
         display: inline-block;
         padding-right: 8px;
+    }
+}
+
+.u-ch-inline-block {
+    > * {
+        display: inline-block;
+    }
+}
+.u-ch-text-left {
+    > * {
+        text-align: left;
     }
 }
 /************************************************
@@ -158,4 +176,38 @@ $base_font_size: 16px;
 ************************************************/
 .m-Exam {
 
+}
+
+/************************************************
+* 投稿
+************************************************/
+
+.c-Post-Block {
+
+    > * {
+        text-align: left!important;
+        display: block;
+    }
+    time {
+        text-align: right!important;
+    }
+    .c-TagList {
+        > * {
+            display: inline-block!important;
+            margin-right: 16px;
+
+            .a-Txt {
+                color: #0093c5;
+                margin-bottom: 0;
+            }
+        }
+        margin-left: 0!important;
+    }
+}
+
+.c-Form-Confirm {
+    .a-Btn {
+        margin-top: 16px!important;
+        margin-bottom: 24px!important;
+    }
 }

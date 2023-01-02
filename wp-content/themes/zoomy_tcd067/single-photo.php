@@ -1,7 +1,7 @@
 <?php
 global $dp_options, $tcd_membership_post, $post;
 if ( ! $dp_options ) $dp_options = get_design_plus_option();
-
+					
 get_header();
 ?>
 <main class="l-main">
@@ -85,6 +85,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	endif;
 ?>
 		<div class="p-entry-photo__inner">
+		<div class="c-Post-Block u-ch-inline-block">
 <?php
 	if ( $dp_options['show_category_photo'] ) :
 		// プレビュー時にはget_the_terms()が使えない
@@ -115,7 +116,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 
 	// プレビュー時にはthe_title(),the_time()が使えない
 	if ( $is_tcd_membership_preview ) :
-?>
+?>			
 			<h1 class="p-entry-photo__title"><?php
 				if ( 'draft' === $post->post_status ) :
 					echo __( 'Draft', 'tcd-w' ) . ': ';
@@ -129,7 +130,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 <?php
 		if ( $dp_options['show_date_photo'] ) :
 ?>
-			<time class="p-entry-photo__date p-article__date"><?php echo date( 'Y.m.d', strtotime( $post->post_date ) ); ?></time>
+			<time class="p-entry-photo__date p-article__date u-mb-0"><?php echo date( 'Y.m.d', strtotime( $post->post_date ) ); ?></time>
 <?php
 		endif;
 	else :
@@ -149,18 +150,9 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 <?php
 		endif;
 	endif;
+?>	
 
-	if ( $dp_options['show_comment_photo'] || $dp_options['show_views_number_photo'] || ( $dp_options['membership']['use_like_photo'] && $dp_options['show_likes_number'] ) ) :
-?>
-			<ul class="p-entry__counts p-entry-photo__counts">
-				<?php if ( $dp_options['show_comment_photo'] ) : ?><li><a class="p-has-icon p-icon-comment" href="#comments"><?php echo get_comments_number(); ?></a></li><?php endif; ?>
-				<?php if ( $dp_options['show_views_number_photo'] ) : ?><li class="p-has-icon p-icon-views"><?php the_post_views(); ?></li><?php endif; ?>
-				<?php if ( $dp_options['membership']['use_like_photo'] && $dp_options['show_likes_number_photo'] ) : ?><li><a class="p-has-icon p-icon-like<?php if ( is_liked() ) echo 'd'; ?> js-toggle-like" href="#" data-post-id="<?php echo get_the_ID(); ?>"><?php echo get_likes_number(); ?></a></li><?php endif; ?>
-			</ul>
-<?php
-	endif;
-?>
-			<div class="p-entry__body p-entry-photo__body p-body<?php if ( 'center' == $post->textalign ) echo ' align1'; ?>">
+			<div class="p-entry__body p-entry-photo__body p-body<?php if ( 'center' == $post->textalign ) echo ' align1'; ?> u-ch-mb-0 u-ch-text-left">
 <?php
 	// URL自動リンクフィルター追加
 	add_filter( 'the_content', 'zoomy_url_auto_link', 20 );
@@ -174,8 +166,74 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 
 	// URL自動リンクフィルター削除
 	remove_filter( 'the_content', 'zoomy_url_auto_link', 20 );
-?>
+?>				
+				<!-- 投稿詳細のハッシュタグリストを表示する -->
+				<ul class="c-TagList">
+					<?php 
+						$hash_tags = array();
+						$hash_tags_class = gettype($post->hash_tags);
+
+						if ($hash_tags_class == gettype("")):
+							$hash_tags = explode(",", $post->hash_tags);
+						else:
+							$hash_tags = $post->hash_tags;
+						endif;
+
+						if (count($hash_tags) != 0):
+							foreach ($hash_tags as $tag):
+								if ($tag == ""):
+									continue;
+								endif;
+								
+								$inner = "";
+								if ( $is_tcd_membership_preview ):
+									$inner = "<p class='a-Txt'>{$tag}</p>";
+								else:
+									$inner = "
+										<a href='' class='a-Txt'>
+											{$tag}
+										</a>
+									";
+								endif;
+								echo "<li>";
+								echo $inner;
+								echo "</li>";
+							endforeach;
+						endif;
+					?>
+				</ul>
 			</div>
+
+			<?php
+	if ( $dp_options['show_comment_photo'] || $dp_options['show_views_number_photo'] || ( $dp_options['membership']['use_like_photo'] && $dp_options['show_likes_number'] ) ) :
+?>		
+			<ul class="p-entry__counts p-entry-photo__counts">
+				<?php if ( $dp_options['show_comment_photo'] ) : ?><li><a class="p-has-icon p-icon-comment" href="#comments"><?php echo get_comments_number(); ?></a></li><?php endif; ?>
+				<?php if ( $dp_options['show_views_number_photo'] ) : ?><li class="p-has-icon p-icon-views"><?php the_post_views(); ?></li><?php endif; ?>
+				<?php if ( $dp_options['membership']['use_like_photo'] && $dp_options['show_likes_number_photo'] ) : ?><li><a class="p-has-icon p-icon-like<?php if ( is_liked() ) echo 'd'; ?> js-toggle-like" href="#" data-post-id="<?php echo get_the_ID(); ?>"><?php echo get_likes_number(); ?></a></li><?php endif; ?>
+			</ul>
+<?php
+	endif;
+?>
+		</div>				
+		<!-- c-Post-Block end -->
+
+<?php
+	get_template_part( 'template-parts/advertisement' );
+
+	// プレビューの場合はフォーム出力
+	if ( $is_tcd_membership_preview ) :
+		the_tcd_membership_preview_form2();
+
+	elseif ( $dp_options['show_comment_photo'] ) :
+		if ( 'type2' === $dp_options['comment_type_photo'] ) :
+			comments_template( '/comments-type2.php', true );
+		else :
+			comments_template( '', true );
+		endif;
+	endif;
+?>
+
 <?php
 	$sns_html = '';
 	if ( $dp_options['show_author_sns_photo'] ) :
@@ -216,6 +274,7 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	endif;
 ?>
 		</div>
+		<!-- p-entry-photo__inner end-->
 		<div class="p-entry-photo__author">
 			<h2 class="p-headline-photo"><span class="p-headline-photo__author"><?php echo esc_html( $dp_options['photo_author_headline'] ); ?></span></h2>
 			<a class="p-hover-effect--<?php echo esc_attr( $dp_options['hover_type'] ); the_tcd_membership_guest_require_login_class( 'author', 'single', ' ' ); ?>" href="<?php echo esc_attr( get_author_posts_url( $author->ID ) ); ?>">
@@ -258,21 +317,6 @@ if ( have_posts() || is_tcd_membership_preview_photo() ) :
 	endif;
 ?>
 		</div>
-<?php
-	get_template_part( 'template-parts/advertisement' );
-
-	// プレビューの場合はフォーム出力
-	if ( $is_tcd_membership_preview ) :
-		the_tcd_membership_preview_form();
-
-	elseif ( $dp_options['show_comment_photo'] ) :
-		if ( 'type2' === $dp_options['comment_type_photo'] ) :
-			comments_template( '/comments-type2.php', true );
-		else :
-			comments_template( '', true );
-		endif;
-	endif;
-?>
 	</article>
 <?php
 	if ( $is_tcd_membership_preview ) :

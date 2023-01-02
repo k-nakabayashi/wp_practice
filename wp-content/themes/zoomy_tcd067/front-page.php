@@ -149,7 +149,11 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 	endif;
 
 	foreach ( $dp_options['contents_builder'] as $key => $cb_content ) :
+
 		$cb_index = 'cb_' . ( $key + 1 );
+
+		$cb_content_select = $cb_content['cb_content_select'];
+
 		if ( empty( $cb_content['cb_content_select'] ) || empty( $cb_content['cb_display'] ) ) continue;
 
 		$cb_item_class = 'p-cb__item p-cb__item--' . esc_attr( $cb_content['cb_content_select'] );
@@ -201,8 +205,10 @@ if ( ! empty( $dp_options['contents_builder'] ) ) :
 			if ( ! empty( $cb_queries[$key]['WP_Query'] ) && $cb_queries[$key]['WP_Query']->have_posts() ) :
 				echo $cb_item_start;
 ?>
-			<div class="p-index-archive p-blog-archive">
+			<!-- is_photo or is_blog -->
+			<div class="p-index-archive p-blog-archive is_<?php echo $cb_content_select; ?>">
 <?php
+
 				while ( $cb_queries[$key]['WP_Query']->have_posts() ) :
 					$cb_queries[$key]['WP_Query']->the_post();
 

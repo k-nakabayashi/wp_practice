@@ -52,9 +52,8 @@ function my_app_enqueue_scripts() {
     # TODO:　後ほどキャッシュクリアを有効にする
 
     // wp_enqueue_script( "my_script", get_template_directory_uri()."/my_index.js", [], false, false);
-
-    
-    wp_enqueue_style( 'theme-style', get_template_directory_uri().'/css/my_style.css?');
+    wp_enqueue_style( 'tailwindcss-style', 'https://cdn.tailwindcss.com');
+    wp_enqueue_style( 'my-style', get_template_directory_uri().'/css/my_style.css?');
     
     // // CDNを利用し「font-awesome.min.css」を追加
 	// wp_enqueue_style( 'font-awesome.min', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');

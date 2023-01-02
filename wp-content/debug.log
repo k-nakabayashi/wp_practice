@@ -1,5 +1,0 @@
-[01-Jan-2023 10:33:34 UTC] PHP Warning:  error_log(/var/www/html/wp-content/logs/debug.log): failed to open stream: No such file or directory in /var/www/html/myapp/index.php on line 18
-[01-Jan-2023 10:42:04 UTC] PHP Warning:  require(/var/www/html/myapp/index.php): failed to open stream: No such file or directory in /var/www/html/wp-settings.php on line 468
-[01-Jan-2023 10:42:04 UTC] PHP Fatal error:  require(): Failed opening required '/var/www/html/myapp/index.php' (include_path='.:/usr/local/lib/php') in /var/www/html/wp-settings.php on line 468
-[01-Jan-2023 10:44:04 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): No such file or directory in /var/www/html/wp-includes/class-wpdb.php on line 1775
-[01-Jan-2023 10:46:05 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): No such file or directory in /var/www/html/wp-includes/class-wpdb.php on line 1775
